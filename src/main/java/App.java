@@ -66,16 +66,40 @@ public class App {
 
            if (organizationDao.getAll().size() > 0) {
                return gson.toJson(organizationDao.getAll());
-            }
-
-            else {
+            } else {
                return "{\"message\":\"I'm sorry, but no organizations are currently listed in the database.\"}";
            }
         });
 
+        get("/communities", "application/json", (req, res) -> {
+            System.out.println(communityDao.getAll());
 
+            if (communityDao.getAll().size() > 0) {
+                return gson.toJson(communityDao.getAll());
+            } else {
+                return "{\"message\":\"I'm sorry, but no communities are currently listed in the database.\"}";
+            }
+        });
 
+        get("/services", "application/json", (req, res) -> {
+            System.out.println(serviceDao.getAll());
 
+            if (serviceDao.getAll().size() > 0) {
+                return gson.toJson(serviceDao.getAll());
+            } else {
+                return "{\"message\":\"I'm sorry, but no services are currently listed in the database.\"}";
+            }
+        });
+
+        get("/regions", "application/json", (req, res) -> {
+            System.out.println(regionDao.getAll());
+
+            if (regionDao.getAll().size() > 0) {
+                return gson.toJson(regionDao.getAll());
+            } else {
+                return "{\"message\":\"I'm sorry, but no regions are currently listed in the database.\"}";
+            }
+        });
 
         // UPDATE
 
