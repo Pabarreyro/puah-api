@@ -9,12 +9,12 @@ public interface ServiceDao {
 
     // CREATE
     void add(Service service);
-//    void addServiceToOrganization(Service service, Organization organization);
+    void addServiceToOrganization(Service service, Organization organization);
 
     // READ
     List<Service> getAll();
     Service findById(int id);
-//    List<Service> getAllByOrganizationId(int organizationId);
+    List<Organization> getAllOrganizations(int id);
 
     // UPDATE
     void update(int id, String name);
