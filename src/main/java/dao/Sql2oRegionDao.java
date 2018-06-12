@@ -35,6 +35,16 @@ public class Sql2oRegionDao implements RegionDao{
     }
 
     @Override
+    public Region findById(int id) {
+        String sql = "SELECT * FROM regions WHERE id = :id";
+        try (Connection con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("id", id)
+                    .executeAndFetchFirst(Region.class);
+        }
+    }
+
+    @Override
     public void clearAll() {
         String sql = "DELETE from regions";
         try (Connection con = sql2o.open()) {

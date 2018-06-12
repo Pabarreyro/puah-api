@@ -35,6 +35,16 @@ public class Sql2oCommunityDao implements CommunityDao {
     }
 
     @Override
+    public Community findById(int id) {
+        String sql = "SELECT * FROM communities WHERE id = :id";
+        try (Connection con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("id", id)
+                    .executeAndFetchFirst(Community.class);
+        }
+    }
+
+    @Override
     public void clearAll() {
         String sql = "DELETE from communities";
         try (Connection con = sql2o.open()) {

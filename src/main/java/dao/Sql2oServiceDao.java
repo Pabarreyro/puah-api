@@ -35,6 +35,16 @@ public class Sql2oServiceDao implements ServiceDao{
     }
 
     @Override
+    public Service findById(int id) {
+        String sql = "SELECT * FROM services WHERE id = :id";
+        try (Connection con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("id", id)
+                    .executeAndFetchFirst(Service.class);
+        }
+    }
+
+    @Override
     public void clearAll() {
         String sql = "DELETE from services";
         try (Connection con = sql2o.open()) {

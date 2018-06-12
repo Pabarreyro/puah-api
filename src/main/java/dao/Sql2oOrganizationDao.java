@@ -1,5 +1,6 @@
 package dao;
 
+import com.sun.tools.corba.se.idl.constExpr.Or;
 import models.Organization;
 import org.sql2o.*;
 
@@ -31,6 +32,16 @@ public class Sql2oOrganizationDao implements OrganizationDao {
         try (Connection con = sql2o.open()) {
             return con.createQuery("SELECT * FROM organizations")
                     .executeAndFetch(Organization.class);
+        }
+    }
+
+    @Override
+    public Organization findById(int id) {
+        String sql = "SELECT * FROM organizations WHERE id = :id";
+        try (Connection con = sql2o.open()) {
+            return con.createQuery(sql)
+                    .addParameter("id", id)
+                    .executeAndFetchFirst(Organization.class);
         }
     }
 
