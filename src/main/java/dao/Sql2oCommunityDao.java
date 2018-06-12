@@ -1,8 +1,10 @@
 package dao;
 
 import models.Community;
+import models.Organization;
 import org.sql2o.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Sql2oCommunityDao implements CommunityDao {
@@ -27,11 +29,45 @@ public class Sql2oCommunityDao implements CommunityDao {
     }
 
     @Override
+    public void addCommunityToOrganization(Community community, Organization organization) {
+        String sql = "INSERT INTO organizations_communities (organizationId, communityId) VALUES (:organizationId, :communityId)";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(sql)
+                    .addParameter("organizationId", organization.getId())
+                    .addParameter("communityId", community.getId() )
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    @Override
     public List<Community> getAll() {
         try (Connection con = sql2o.open()) {
             return con.createQuery("SELECT * FROM communities")
                     .executeAndFetch(Community.class);
         }
+    }
+
+    @Override
+    public List<Organization> getAllOrganizations(int communityId) {
+        ArrayList<Organization> returnedOrganizations = new ArrayList<>();
+
+        String joinQuery = "SELECT organizationId FROM organizations_communities WHERE communityId = :communityId";
+        try (Connection con = sql2o.open()) {
+            List<Integer> organizationIds = con.createQuery(joinQuery)
+                    .addParameter("communityId", communityId)
+                    .executeAndFetch(Integer.class);
+            for (Integer organizationId : organizationIds) {
+                String organizationQuery = "SELECT * FROM organizations WHERE id =:organizationId";
+                returnedOrganizations.add(
+                        con.createQuery(organizationQuery)
+                                .addParameter("organizationId", organizationId)
+                                .executeAndFetchFirst(Organization.class)
+                );
+            }
+        }
+        return returnedOrganizations;
     }
 
     @Override
@@ -61,7 +97,7 @@ public class Sql2oCommunityDao implements CommunityDao {
     @Override
     public void deleteById(int id) {
         try (Connection con = sql2o.open()) {
-            con.createQuery("DELETE fom communities WHERE id = :id")
+            con.createQuery("DELETE from communities WHERE id = :id")
                     .addParameter("id", id)
                     .executeUpdate();
         } catch (Sql2oException ex) {
@@ -71,7 +107,7 @@ public class Sql2oCommunityDao implements CommunityDao {
 
     @Override
     public void clearAll() {
-        String sql = "DELETE from communities";
+        String sql = "TRUNCATE communities";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .executeUpdate();

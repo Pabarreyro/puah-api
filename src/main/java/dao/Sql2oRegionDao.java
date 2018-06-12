@@ -1,8 +1,10 @@
 package dao;
 
+import models.Organization;
 import models.Region;
 import org.sql2o.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Sql2oRegionDao implements RegionDao{
@@ -27,6 +29,19 @@ public class Sql2oRegionDao implements RegionDao{
     }
 
     @Override
+    public void addRegionToOrganization(Region region, Organization organization) {
+        String sql = "INSERT INTO organizations_regions (organizationId, regionId) VALUES (:organizationId, :regionId)";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(sql)
+                    .addParameter("organizationId", organization.getId())
+                    .addParameter("regionId", region.getId())
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    @Override
     public List<Region> getAll() {
         try (Connection con = sql2o.open()) {
             return con.createQuery("SELECT * FROM regions")
@@ -42,6 +57,27 @@ public class Sql2oRegionDao implements RegionDao{
                     .addParameter("id", id)
                     .executeAndFetchFirst(Region.class);
         }
+    }
+
+    @Override
+    public List<Organization> getAllOrganizations(int regionId) {
+        ArrayList<Organization> returnedOrganizations = new ArrayList<>();
+
+        String joinQuery = "SELECT organizationId FROM organizations_regions WHERE regionId = :regionId";
+        try (Connection con = sql2o.open()) {
+            List<Integer> organizationIds = con.createQuery(joinQuery)
+                    .addParameter("regionId", regionId)
+                    .executeAndFetch(Integer.class);
+            for (Integer organizationId : organizationIds) {
+                String organizationQuery = "SELECT * FROM organizations WHERE id =:organizationId";
+                returnedOrganizations.add(
+                        con.createQuery(organizationQuery)
+                                .addParameter("organizationId", organizationId)
+                                .executeAndFetchFirst(Organization.class)
+                );
+            }
+        }
+        return returnedOrganizations;
     }
 
     @Override
@@ -70,7 +106,7 @@ public class Sql2oRegionDao implements RegionDao{
 
     @Override
     public void clearAll() {
-        String sql = "DELETE from regions";
+        String sql = "TRUNCATE regions";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .executeUpdate();
