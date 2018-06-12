@@ -17,7 +17,7 @@ public interface RegionDao {
 //    List<Region> getAllByOrganizationId(int organizationId);
 
     // UPDATE
-    void update(String name);
+    void update(int id, String name);
 
     // DELETE
     void deleteById(int id);

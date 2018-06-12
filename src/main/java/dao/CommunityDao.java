@@ -16,7 +16,7 @@ public interface CommunityDao {
 //    List<Community> getAllByOrganizationId(int organizationId);
 
     // UPDATE
-    void update(String name, String type);
+    void update(int id, String name, String type);
 
     // DELETE
     void deleteById(int id);
