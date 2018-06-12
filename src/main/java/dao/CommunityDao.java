@@ -10,12 +10,12 @@ public interface CommunityDao {
 
     // CREATE
     void add(Community community);
-    void addCommunityToOrganization(Service service, Organization organization);
+    void addCommunityToOrganization(Community community, Organization organization);
 
     // READ
     List<Community> getAll();
     Community findById(int id);
-    List<Organization> getAllOrganizations(int id);
+    List<Organization> getAllOrganizations(int serviceId);
 
     // UPDATE
     void update(int id, String name, String type);
