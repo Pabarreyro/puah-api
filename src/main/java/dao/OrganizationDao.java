@@ -23,7 +23,7 @@ public interface OrganizationDao {
 //    List<Organization> getAllByRegionId(int regionId);
 
     // UPDATE
-    void update(int id, String name, String address, String zipcode, String phone, String website, String email);
+    void update(int id, String name, String address, String zip, String phone, String website, String email);
 
     // DELETE
     void deleteById(int id);
