@@ -46,6 +46,24 @@ public class Sql2oOrganizationDao implements OrganizationDao {
     }
 
     @Override
+    public void update(int id, String name, String address, String zip, String phone, String website, String email) {
+        String sql = "UPDATE restaurants SET (name, address, zip, phone, website, email) = (:name, :address, :zip, :phone, :website, :email)";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(sql)
+                    .addParameter("id", id)
+                    .addParameter("name", name)
+                    .addParameter("address", address)
+                    .addParameter("zip", zip)
+                    .addParameter("phone", phone)
+                    .addParameter("website", website)
+                    .addParameter("email", email)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    @Override
     public void clearAll() {
         String sql = "DELETE from organizations";
         try (Connection con = sql2o.open()) {

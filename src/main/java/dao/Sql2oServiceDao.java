@@ -45,6 +45,19 @@ public class Sql2oServiceDao implements ServiceDao{
     }
 
     @Override
+    public void update(int id, String name) {
+        String sql = "UPDATE services SET name = :name WHERE id = :id";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(sql)
+                    .addParameter("id", id)
+                    .addParameter("name", name)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    @Override
     public void clearAll() {
         String sql = "DELETE from services";
         try (Connection con = sql2o.open()) {

@@ -45,6 +45,20 @@ public class Sql2oCommunityDao implements CommunityDao {
     }
 
     @Override
+    public void update(int id, String name, String type) {
+        String sql = "UPDATE communities SET (name, type) = (:name, :type) WHERE id = :id";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(sql)
+                    .addParameter("id", id)
+                    .addParameter("name", name)
+                    .addParameter("type", type)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    @Override
     public void clearAll() {
         String sql = "DELETE from communities";
         try (Connection con = sql2o.open()) {
