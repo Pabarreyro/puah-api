@@ -1,5 +1,6 @@
 package dao;
 
+import models.Region;
 import org.sql2o.*;
 
 public class Sql2oRegionDao implements RegionDao{
@@ -7,6 +8,20 @@ public class Sql2oRegionDao implements RegionDao{
 
     public Sql2oRegionDao(Sql2o sql2o) {
         this.sql2o = sql2o;
+    }
+
+    @Override
+    public void add(Region region) {
+        String sql = "INSERT INTO regions (name) VALUES (:name)";
+        try (Connection con = sql2o.open()) {
+            int id = (int) con.createQuery(sql, true)
+                    .bind(region)
+                    .executeUpdate()
+                    .getKey();
+            region.setId(id);
+        } catch (Sql2oException ex) {
+            System.out.println(ex);
+        }
     }
 
     @Override
