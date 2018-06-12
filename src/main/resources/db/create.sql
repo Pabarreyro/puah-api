@@ -1,6 +1,6 @@
 CREATE DATABASE resources;
 
-\c resources
+\c resources;
 
 CREATE TABLE organizations (
     id SERIAL PRIMARY KEY,
@@ -9,24 +9,24 @@ CREATE TABLE organizations (
     zip VARCHAR,
     phone VARCHAR,
     website VARCHAR,
-    email VARCHAR,
+    email VARCHAR
 );
 
 CREATE TABLE communities (
     id SERIAL PRIMARY KEY,
     name VARCHAR,
-    type VARCHAR,
+    type VARCHAR
 );
 
 CREATE TABLE services (
     id SERIAL PRIMARY KEY,
-    name VARCHAR,
+    name VARCHAR
 );
 
 CREATE TABLE regions (
     id SERIAL PRIMARY KEY,
-    name VARCHAR,
-)
+    name VARCHAR
+);
 
 CREATE TABLE organizations_communities (
     id SERIAL PRIMARY KEY,
@@ -46,4 +46,4 @@ CREATE TABLE organizations_regions (
     regionId INTEGER
 );
 
-CREATE TABLE resources_test WITH TEMPLATE resources;
+CREATE DATABASE resources_test WITH TEMPLATE resources;
