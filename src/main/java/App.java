@@ -38,6 +38,17 @@ public class App {
 
 
         // READ
+        get("/organizations", "application/json", (req, res) -> {
+           System.out.println(organizationDao.getAll());
+
+           if (organizationDao.getAll().size() > 0) {
+               return gson.toJson(organizationDao.getAll());
+            }
+
+            else {
+               return "{\"message\":\"I'm sorry, but no organizations are currently listed in the database.\"}";
+           }
+        });
 
 
 
