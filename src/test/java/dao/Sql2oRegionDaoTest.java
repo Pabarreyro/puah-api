@@ -39,7 +39,7 @@ public class Sql2oRegionDaoTest {
     @Test
     public void add_setsId() throws Exception {
         Region testRegion = setUpRegion();
-        assertEquals(0, testRegion.getId());
+        assertNotEquals(null, testRegion.getId());
     }
 
     @Test

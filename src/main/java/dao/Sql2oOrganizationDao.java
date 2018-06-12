@@ -24,7 +24,6 @@ public class Sql2oOrganizationDao implements OrganizationDao {
                     .bind(organization)
                     .executeUpdate()
                     .getKey();
-            System.out.println(id);
             organization.setId(id);
         } catch (Sql2oException ex) {
             System.out.println(ex);

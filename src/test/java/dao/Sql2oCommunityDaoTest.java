@@ -39,7 +39,7 @@ public class Sql2oCommunityDaoTest {
     @Test
     public void add_setsId() throws Exception {
         Community testCommunity = setUpCommunity();
-        assertEquals(0, testCommunity.getId());
+        assertNotEquals(null, testCommunity.getId());
     }
 
     @Test

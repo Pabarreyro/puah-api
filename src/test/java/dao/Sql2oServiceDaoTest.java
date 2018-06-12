@@ -39,7 +39,7 @@ public class Sql2oServiceDaoTest {
     @Test
     public void add_setsId() throws Exception {
         Service testService = setUpService();
-        assertEquals(0, testService.getId());
+        assertNotEquals(null, testService.getId());
     }
 
     @Test
