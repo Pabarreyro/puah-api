@@ -3,7 +3,9 @@ import dao.Sql2oCommunityDao;
 import dao.Sql2oOrganizationDao;
 import dao.Sql2oRegionDao;
 import dao.Sql2oServiceDao;
+import models.Community;
 import models.Organization;
+import models.Region;
 import models.Service;
 import org.sql2o.*;
 
@@ -42,6 +44,20 @@ public class App {
            serviceDao.add(newService);
            res.status(201);
            return gson.toJson(newService);
+        });
+
+        post("/communities/new", "application/json", (req, res) -> {
+            Community newCommunity = gson.fromJson(req.body(), Community.class);
+            communityDao.add(newCommunity);
+            res.status(201);
+            return gson.toJson(newCommunity);
+        });
+
+        post("/regions/new", "application/json", (req, res) -> {
+            Region newRegion = gson.fromJson(req.body(), Region.class);
+            regionDao.add(newRegion);
+            res.status(201);
+            return gson.toJson(newRegion);
         });
 
         // READ
