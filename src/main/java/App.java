@@ -4,6 +4,7 @@ import dao.Sql2oOrganizationDao;
 import dao.Sql2oRegionDao;
 import dao.Sql2oServiceDao;
 import models.Organization;
+import models.Service;
 import org.sql2o.*;
 
 import static spark.Spark.*;
@@ -36,6 +37,12 @@ public class App {
             return gson.toJson(newOrganization);
         });
 
+        post("/services/new", "application/json", (req, res) -> {
+           Service newService = gson.fromJson(req.body(), Service.class);
+           serviceDao.add(newService);
+           res.status(201);
+           return gson.toJson(newService);
+        });
 
         // READ
         get("/organizations", "application/json", (req, res) -> {
@@ -49,6 +56,8 @@ public class App {
                return "{\"message\":\"I'm sorry, but no organizations are currently listed in the database.\"}";
            }
         });
+
+
 
 
 
