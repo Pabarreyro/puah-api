@@ -5,6 +5,8 @@ import models.Organization;
 import org.junit.*;
 import org.sql2o.*;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class Sql2oCommunityDaoTest {
@@ -53,6 +55,19 @@ public class Sql2oCommunityDaoTest {
     }
 
     @Test
+    public void getAllOrganizations_returnsAllAssociatedOrganizations() {
+        Organization testOrganization = setUpOrganization();
+        Organization altTestOrganization = setUpAltOrganization();
+
+        Community testCommunity= setUpCommunity();
+        communityDao.addCommunityToOrganization(testCommunity, testOrganization);
+        communityDao.addCommunityToOrganization(testCommunity, altTestOrganization);
+
+        Organization[] organizations = {testOrganization, altTestOrganization};
+        assertEquals(Arrays.asList(organizations), communityDao.getAllOrganizations(testCommunity.getId()));
+    }
+
+    @Test
     public void findById_returnsCorrectCommunity() throws Exception {
         Community testCommunity = setUpCommunity();
         Community altTestCommunity = setUpAltCommunity();
@@ -72,9 +87,8 @@ public class Sql2oCommunityDaoTest {
     public void deleteById_deletesCorrectCommunity() throws Exception {
         Community testCommunity = setUpCommunity();
         Community altTestCommunity = setUpAltCommunity();
-        organizationDao.deleteById(altTestCommunity.getId());
-        assertEquals(testCommunity, organizationDao.getAll().get(0));
-        assertEquals(1, organizationDao.getAll().size());
+        communityDao.deleteById(altTestCommunity.getId());
+        assertEquals(1, communityDao.getAll().size());
     }
 
     @Test
@@ -86,12 +100,6 @@ public class Sql2oCommunityDaoTest {
     }
 
     // Helpers
-    public Organization setUpOrganization() {
-        Organization newOrganization = new Organization("CCC", "201 NW 2nd Ave", "97201", "503-260-5690", "www.ccc.org", "info@ccc.org");
-        organizationDao.add(newOrganization);
-        return newOrganization;
-    }
-
     public Community setUpCommunity() {
         Community newCommunity = new Community("gender non-binary", "gender identity");
         communityDao.add(newCommunity);
@@ -102,5 +110,17 @@ public class Sql2oCommunityDaoTest {
         Community newCommunity = new Community("nonlegal citizen", "immigration status");
         communityDao.add(newCommunity);
         return newCommunity;
+    }
+
+    public Organization setUpOrganization() {
+        Organization newOrganization = new Organization("CCC", "201 NW 2nd Ave", "97201", "503-260-5690", "www.ccc.org", "info@ccc.org");
+        organizationDao.add(newOrganization);
+        return newOrganization;
+    }
+
+    public Organization setUpAltOrganization() {
+        Organization newOrganization = new Organization("Coalition of Communities of Color", "211 NW 3rd Ave", "97202", "517-286-5722");
+        organizationDao.add(newOrganization);
+        return newOrganization;
     }
 }

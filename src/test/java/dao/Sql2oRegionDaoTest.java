@@ -5,6 +5,8 @@ import models.Region;
 import org.junit.*;
 import org.sql2o.*;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class Sql2oRegionDaoTest {
@@ -53,6 +55,19 @@ public class Sql2oRegionDaoTest {
     }
 
     @Test
+    public void getAllOrganizations_returnsAllAssociatedOrganizations() {
+        Organization testOrganization = setUpOrganization();
+        Organization altTestOrganization = setUpAltOrganization();
+
+        Region testRegion = setUpRegion();
+        regionDao.addRegionToOrganization(testRegion, testOrganization);
+        regionDao.addRegionToOrganization(testRegion, altTestOrganization);
+
+        Organization[] organizations = {testOrganization, altTestOrganization};
+        assertEquals(Arrays.asList(organizations), regionDao.getAllOrganizations(testRegion.getId()));
+    }
+
+    @Test
     public void findById_returnsCorrectRegion() throws Exception {
         Region testRegion = setUpRegion();
         Region altTestRegion = setUpAltRegion();
@@ -95,5 +110,17 @@ public class Sql2oRegionDaoTest {
         Region newRegion = new Region ("Outer SE");
         regionDao.add(newRegion);
         return newRegion;
+    }
+
+    public Organization setUpOrganization() {
+        Organization newOrganization = new Organization("CCC", "201 NW 2nd Ave", "97201", "503-260-5690", "www.ccc.org", "info@ccc.org");
+        organizationDao.add(newOrganization);
+        return newOrganization;
+    }
+
+    public Organization setUpAltOrganization() {
+        Organization newOrganization = new Organization("Coalition of Communities of Color", "211 NW 3rd Ave", "97202", "517-286-5722");
+        organizationDao.add(newOrganization);
+        return newOrganization;
     }
 }

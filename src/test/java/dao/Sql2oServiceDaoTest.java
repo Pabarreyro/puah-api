@@ -1,8 +1,11 @@
 package dao;
 
+import models.Organization;
 import models.Service;
 import org.junit.*;
 import org.sql2o.*;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -52,6 +55,19 @@ public class Sql2oServiceDaoTest {
     }
 
     @Test
+    public void getAllOrganizations_returnsAllAssociatedOrganizations() {
+        Organization testOrganization = setUpOrganization();
+        Organization altTestOrganization = setUpAltOrganization();
+
+        Service testService = setUpService();
+        serviceDao.addServiceToOrganization(testService, testOrganization);
+        serviceDao.addServiceToOrganization(testService, altTestOrganization);
+
+        Organization[] organizations = {testOrganization, altTestOrganization};
+        assertEquals(Arrays.asList(organizations), serviceDao.getAllOrganizations(testService.getId()));
+    }
+
+    @Test
     public void findById_returnsCorrectService() throws Exception {
         Service testService = setUpService();
         Service altTestService = setUpAltService();
@@ -94,5 +110,17 @@ public class Sql2oServiceDaoTest {
         Service newService = new Service ("Health Services");
         serviceDao.add(newService);
         return newService;
+    }
+
+    public Organization setUpOrganization() {
+        Organization newOrganization = new Organization("CCC", "201 NW 2nd Ave", "97201", "503-260-5690", "www.ccc.org", "info@ccc.org");
+        organizationDao.add(newOrganization);
+        return newOrganization;
+    }
+
+    public Organization setUpAltOrganization() {
+        Organization newOrganization = new Organization("Coalition of Communities of Color", "211 NW 3rd Ave", "97202", "517-286-5722");
+        organizationDao.add(newOrganization);
+        return newOrganization;
     }
 }
