@@ -1,0 +1,109 @@
+package dao;
+
+import models.Organization;
+import org.junit.*;
+import org.sql2o.*;
+
+import static org.junit.Assert.*;
+
+public class Sql2oOrganizationDaoTest {
+    private static Connection conn;
+    private static Sql2oOrganizationDao organizationDao;
+    private static Sql2oCommunityDao communityDao;
+    private static Sql2oServiceDao serviceDao;
+    private static Sql2oRegionDao regionDao;
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        String connectionString = "jdbc:postgresql://localhost:5432/resources_test";
+        Sql2o sql2o = new Sql2o(connectionString, null, null);
+        organizationDao = new Sql2oOrganizationDao(sql2o);
+        communityDao = new Sql2oCommunityDao(sql2o);
+        serviceDao = new Sql2oServiceDao(sql2o);
+        regionDao = new Sql2oRegionDao(sql2o);
+        conn = sql2o.open();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        System.out.println("clearing database");
+        organizationDao.clearAll();
+        communityDao.clearAll();
+        serviceDao.clearAll();
+        regionDao.clearAll();
+    }
+
+    @AfterClass
+    public static void shutDown() throws Exception {
+        conn.close();
+        System.out.println("connection closed");
+    }
+
+    @Test
+    public void add_setsId() throws Exception {
+        Organization testOrganization = setUpOrganization();
+        assertEquals(0, testOrganization.getId());
+    }
+
+    @Test
+    public void getAll_returnsAllExistingOrganizations() throws Exception {
+        Organization testOrganization = setUpOrganization();
+        assertEquals(1, organizationDao.getAll().size());
+        assertEquals(testOrganization, organizationDao.getAll().get(0));
+    }
+
+    @Test
+    public void getAll_returnsEmptyListIfNoOrganizationsExist() throws Exception {
+        assertEquals(0, organizationDao.getAll().size());
+    }
+
+    @Test
+    public void findById_returnsCorrectOrganization() throws Exception {
+        Organization testOrganization = setUpOrganization();
+        Organization altTestOrganization = setUpAltOrganization();
+        assertEquals(testOrganization, organizationDao.findById(testOrganization.getId()));
+    }
+
+    @Test
+    public void update_correctlyUpdatesOrganization() throws Exception {
+        Organization testOrganization = setUpOrganization();
+        organizationDao.update(testOrganization.getId(), "Coalition of Communities of Color", "211 NW 3rd Ave", "97202", "517-286-5722", "www.ccc.org", "info@ccc.org");
+        Organization updatedOrganization = organizationDao.findById(testOrganization.getId());
+        assertEquals("Coalition of Communities of Color", updatedOrganization.getName());
+        assertEquals("211 NW 3rd Ave", updatedOrganization.getAddress());
+        assertEquals("97202", updatedOrganization.getZip());
+        assertEquals("517-286-5722", updatedOrganization.getPhone());
+        assertEquals("www.ccc.org", updatedOrganization.getWebsite());
+        assertEquals("info@ccc.org", updatedOrganization.getEmail());
+    }
+
+    @Test
+    public void deleteById_deletesCorrectOrganization() throws Exception {
+        Organization testOrganization = setUpOrganization();
+        Organization altTestOrganization = setUpAltOrganization();
+        organizationDao.deleteById(altTestOrganization.getId());
+        assertEquals(testOrganization, organizationDao.getAll().get(0));
+        assertEquals(1, organizationDao.getAll().size());
+    }
+
+    @Test
+    public void clearAll_deletesAllExistingOrganizations() throws Exception {
+        Organization testOrganization = setUpOrganization();
+        Organization altTestOrganization = setUpAltOrganization();
+        organizationDao.clearAll();
+        assertEquals(0, organizationDao.getAll().size());
+    }
+
+    // Helpers
+    public Organization setUpOrganization() {
+        Organization newOrganization = new Organization("CCC", "201 NW 2nd Ave", "97201", "503-260-5690", "www.ccc.org", "info@ccc.org");
+        organizationDao.add(newOrganization);
+        return newOrganization;
+    }
+
+    public Organization setUpAltOrganization() {
+        Organization newOrganization = new Organization("Coalition of Communities of Color", "211 NW 3rd Ave", "97202", "517-286-5722");
+        organizationDao.add(newOrganization);
+        return newOrganization;
+    }
+}
