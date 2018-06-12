@@ -3,6 +3,8 @@ package dao;
 import models.Region;
 import org.sql2o.*;
 
+import java.util.List;
+
 public class Sql2oRegionDao implements RegionDao{
     private final Sql2o sql2o;
 
@@ -21,6 +23,14 @@ public class Sql2oRegionDao implements RegionDao{
             region.setId(id);
         } catch (Sql2oException ex) {
             System.out.println(ex);
+        }
+    }
+
+    @Override
+    public List<Region> getAll() {
+        try (Connection con = sql2o.open()) {
+            return con.createQuery("SELECT * FROM regions")
+                    .executeAndFetch(Region.class);
         }
     }
 

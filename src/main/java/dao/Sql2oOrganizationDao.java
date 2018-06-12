@@ -27,6 +27,14 @@ public class Sql2oOrganizationDao implements OrganizationDao {
     }
 
     @Override
+    public List<Organization> getAll() {
+        try (Connection con = sql2o.open()) {
+            return con.createQuery("SELECT * FROM organizations")
+                    .executeAndFetch(Organization.class);
+        }
+    }
+
+    @Override
     public void clearAll() {
         String sql = "DELETE from organizations";
         try (Connection con = sql2o.open()) {

@@ -3,6 +3,8 @@ package dao;
 import models.Service;
 import org.sql2o.*;
 
+import java.util.List;
+
 public class Sql2oServiceDao implements ServiceDao{
     private final Sql2o sql2o;
 
@@ -21,6 +23,14 @@ public class Sql2oServiceDao implements ServiceDao{
             service.setId(id);
         } catch (Sql2oException ex) {
             System.out.println(ex);
+        }
+    }
+
+    @Override
+    public List<Service> getAll() {
+        try (Connection con = sql2o.open()) {
+            return con.createQuery("SELECT * FROM services")
+                    .executeAndFetch(Service.class);
         }
     }
 
