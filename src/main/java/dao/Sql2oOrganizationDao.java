@@ -64,6 +64,17 @@ public class Sql2oOrganizationDao implements OrganizationDao {
     }
 
     @Override
+    public void deleteById(int id) {
+        try (Connection con = sql2o.open()) {
+            con.createQuery("DELETE fom organizations WHERE id = :id")
+                    .addParameter("id", id)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    @Override
     public void clearAll() {
         String sql = "DELETE from organizations";
         try (Connection con = sql2o.open()) {

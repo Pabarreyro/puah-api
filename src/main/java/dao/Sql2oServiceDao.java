@@ -58,6 +58,17 @@ public class Sql2oServiceDao implements ServiceDao{
     }
 
     @Override
+    public void deleteById(int id) {
+        try (Connection con = sql2o.open()) {
+            con.createQuery("DELETE fom services WHERE id = :id")
+                    .addParameter("id", id)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    @Override
     public void clearAll() {
         String sql = "DELETE from services";
         try (Connection con = sql2o.open()) {
