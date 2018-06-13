@@ -159,16 +159,67 @@ public class App {
 
             Organization organizationToFind = organizationDao.findById(organizationId);
 
-            if (organizationToFind == null){
+            if (organizationToFind == null) {
                 throw new ApiException(404, String.format("No organization with the id: \"%s\" exists", req.params("id")));
             }
 
             return gson.toJson(organizationDao.findById(organizationId));
         });
 
-        get("/services/:id", "application");
+        get("/services/:id", "application/json", (req, res) -> {
+            int serviceId = Integer.parseInt(req.params("id"));
+
+
+            Service serviceToFind = serviceDao.findById(serviceId);
+
+            if (serviceToFind == null) {
+                throw new ApiException(404, String.format("No organization with the id: \"%s\" exists", req.params("id")));
+            }
+
+            return gson.toJson(serviceDao.findById(serviceId));
+        });
+
+        get("/communities/:id", "application/json", (req, res) -> {
+            int communityId = Integer.parseInt(req.params("id"));
+
+            Community communityToFind = communityDao.findById(communityId);
+
+            if (communityToFind == null) {
+                throw new ApiException(404, String.format("No community with the id: \"%s\" exists", req.params("id")));
+            }
+
+            return gson.toJson(communityDao.findById(communityId));
+        });
+
+        get("/regions/:id", "application/json", (req, res) -> {
+            int regionId = Integer.parseInt(req.params("id"));
+
+            Region regionToFind = regionDao.findById(regionId);
+
+            if (regionToFind == null) {
+                throw new ApiException(404, String.format("No region with the id: \"%s\" exists", req.params("id")));
+            }
+
+            return gson.toJson(regionDao.findById(regionId));
+        });
 
         // UPDATE
+        post("/organizations/:id/update", "application/json", (req, res) ->{
+            Organization updatedOrganization = gson.fromJson(req.body(), Organization.class);
+            organizationDao.update();
+        });
+
+        post("/communities/:id/update", "application/json", (req, res) ->{
+
+        });
+
+        post("/regions/:id/update", "application/json", (req, res) ->{
+
+        });
+
+        post("/services/:id/update", "application/json", (req, res) ->{
+
+        });
 
 
 
