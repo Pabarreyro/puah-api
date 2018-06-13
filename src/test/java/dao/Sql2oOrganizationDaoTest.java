@@ -112,14 +112,16 @@ public class Sql2oOrganizationDaoTest {
     @Test
     public void update_correctlyUpdatesOrganization() throws Exception {
         Organization testOrganization = setUpOrganization();
-        organizationDao.update(testOrganization.getId(), "Coalition of Communities of Color", "211 NW 3rd Ave", "97202", "517-286-5722", "www.ccc.org", "info@ccc.org");
-        Organization updatedOrganization = organizationDao.findById(testOrganization.getId());
-        assertEquals("Coalition of Communities of Color", updatedOrganization.getName());
-        assertEquals("211 NW 3rd Ave", updatedOrganization.getAddress());
-        assertEquals("97202", updatedOrganization.getZip());
-        assertEquals("517-286-5722", updatedOrganization.getPhone());
-        assertEquals("www.ccc.org", updatedOrganization.getWebsite());
-        assertEquals("info@ccc.org", updatedOrganization.getEmail());
+        Organization testUpdatedOrganization = new Organization("Coalition of Communities of Color", "211 NW 3rd Ave", "97202", "517-286-5722");
+        testUpdatedOrganization.setId(testOrganization.getId());
+        organizationDao.update(testUpdatedOrganization);
+        Organization newOrganization = organizationDao.findById(testUpdatedOrganization.getId());
+        assertEquals("Coalition of Communities of Color", newOrganization.getName());
+        assertEquals("211 NW 3rd Ave", newOrganization.getAddress());
+        assertEquals("97202", newOrganization.getZip());
+        assertEquals("517-286-5722", newOrganization.getPhone());
+        assertEquals(testUpdatedOrganization.getWebsite(), newOrganization.getWebsite());
+        assertEquals(testUpdatedOrganization.getEmail(), newOrganization.getEmail());
     }
 
     @Test

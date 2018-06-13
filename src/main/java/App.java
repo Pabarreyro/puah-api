@@ -169,6 +169,7 @@ public class App {
         get("/services/:id", "application/json", (req, res) -> {
             int serviceId = Integer.parseInt(req.params("id"));
 
+
             Service serviceToFind = serviceDao.findById(serviceId);
 
             if (serviceToFind == null) {
