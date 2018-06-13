@@ -1,6 +1,6 @@
-CREATE DATABASE resources;
+CREATE DATABASE puah;
 
-\c resources;
+\c puah;
 
 CREATE TABLE organizations (
     id SERIAL PRIMARY KEY,
@@ -46,4 +46,4 @@ CREATE TABLE organizations_regions (
     regionId INTEGER
 );
 
-CREATE DATABASE resources_test WITH TEMPLATE resources;
+CREATE DATABASE puah_test WITH TEMPLATE puah;

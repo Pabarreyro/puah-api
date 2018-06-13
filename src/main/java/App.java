@@ -3,11 +3,17 @@ import dao.Sql2oCommunityDao;
 import dao.Sql2oOrganizationDao;
 import dao.Sql2oRegionDao;
 import dao.Sql2oServiceDao;
+import exceptions.ApiException;
 import models.Community;
 import models.Organization;
 import models.Region;
 import models.Service;
 import org.sql2o.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static spark.Spark.*;
 
@@ -62,13 +68,13 @@ public class App {
 
         // READ
         get("/organizations", "application/json", (req, res) -> {
-           System.out.println(organizationDao.getAll());
+            System.out.println(organizationDao.getAll());
 
-           if (organizationDao.getAll().size() > 0) {
-               return gson.toJson(organizationDao.getAll());
+            if (organizationDao.getAll().size() > 0) {
+                return gson.toJson(organizationDao.getAll());
             } else {
-               return "{\"message\":\"I'm sorry, but no organizations are currently listed in the database.\"}";
-           }
+                return "{\"message\":\"I'm sorry, but no organizations are currently listed in the database.\"}";
+            }
         });
 
         get("/communities", "application/json", (req, res) -> {
@@ -101,6 +107,21 @@ public class App {
             }
         });
 
+        get("/organizations/:id", "application/json", (req, res) -> {
+            int organizationId = Integer.parseInt(req.params("id"));
+
+            Organization organizationToFind = organizationDao.findById(organizationId);
+
+            if (organizationToFind == null){
+                throw new ApiException(404, String.format("No organization with the id: \"%s\" exists", req.params("id")));
+            }
+
+            return gson.toJson(organizationDao.findById(organizationId));
+        });
+
+        get("/services/:id", "application");
+
+
         // UPDATE
 
 
@@ -114,6 +135,25 @@ public class App {
             res.type("application/json");
         });
 
+        exception(ApiException.class, (exception, req, res) -> {
+            ApiException err = (ApiException) exception;
+            Map<String, Object> jsonMap = new HashMap<>();
+            jsonMap.put("status", err.getStatusCode());
+            jsonMap.put("errorMessage", err.getMessage());
+            res.type("application/json");
+            res.status(err.getStatusCode());
+            res.body(gson.toJson(jsonMap));
+        });
+    }
 
+    // Helper
+    public static ArrayList<Integer> parseQuery(String query) {
+        ArrayList<Integer> queryValues = new ArrayList<>();
+        String[] parsedQuery = query.split(",");
+        for (String queryValue : parsedQuery) {
+            int serviceId = Integer.parseInt(queryValue);
+            queryValues.add(serviceId);
+        }
+        return queryValues;
     }
 }
