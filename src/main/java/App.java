@@ -8,6 +8,7 @@ import models.Community;
 import models.Organization;
 import models.Region;
 import models.Service;
+import org.omg.CORBA.Any;
 import org.sql2o.*;
 
 import java.util.ArrayList;
@@ -39,10 +40,17 @@ public class App {
 
         // CREATE
         post("/organizations/new", "application/json", (req, res) -> {
-            Organization newOrganization = gson.fromJson(req.body(), Organization.class);
-            organizationDao.add(newOrganization);
+            HashMap<String, Object[]> requestBody = gson.fromJson(req.body(), HashMap.class);
+
+            // Parse Organization Out
+
+            // Parse Services[] out
+
+            // Parse Communities[] out
+
+            gson.fromJson(req.body(), Organization.class);
             res.status(201);
-            return gson.toJson(newOrganization);
+            return gson.toJson(requestBody);
         });
 
         post("/services/new", "application/json", (req, res) -> {
@@ -68,10 +76,49 @@ public class App {
 
         // READ
         get("/organizations", "application/json", (req, res) -> {
-            System.out.println(organizationDao.getAll());
+            List<Organization> allOrgs = organizationDao.getAll();
+            ArrayList<Organization> filteredOrgs = new ArrayList<>();
+            String[] serviceIds = req.queryParamsValues("service");
+            String[] communityIds = req.queryParamsValues("community");
+            String[] regionIds = req.queryParamsValues("region");
 
-            if (organizationDao.getAll().size() > 0) {
-                return gson.toJson(organizationDao.getAll());
+            if (serviceIds.length > 0 ) {
+                for (String serviceId : serviceIds) {
+                    int queryId = Integer.parseInt(serviceId);
+
+                    for (Organization org : serviceDao.getAllOrganizations(queryId)) {
+                        if (!filteredOrgs.contains(org)) {
+                            filteredOrgs.add(org);
+                        }
+                    }
+                }
+            }
+            if (communityIds.length > 0) {
+                for (String communityId : communityIds) {
+                    int queryId = Integer.parseInt(communityId);
+
+                    for (Organization org : communityDao.getAllOrganizations(queryId)) {
+                        if (!filteredOrgs.contains(org)) {
+                            filteredOrgs.add(org);
+                        }
+                    }
+                }
+            }
+            if (regionIds.length > 0) {
+                for (String regionId : regionIds) {
+                    int queryId = Integer.parseInt(regionId);
+
+                    for (Organization org : regionDao.getAllOrganizations(queryId)) {
+                        if (!filteredOrgs.contains(org)) {
+                            filteredOrgs.add(org);
+                        }
+                    }
+                }
+            }
+            if (filteredOrgs.size() > 0) {
+                return gson.toJson(filteredOrgs);
+            } else if (allOrgs.size() > 0){
+                return gson.toJson(allOrgs);
             } else {
                 return "{\"message\":\"I'm sorry, but no organizations are currently listed in the database.\"}";
             }
@@ -120,7 +167,6 @@ public class App {
         });
 
         get("/services/:id", "application");
-
 
         // UPDATE
 
