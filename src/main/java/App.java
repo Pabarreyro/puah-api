@@ -155,7 +155,6 @@ public class App {
         });
 
         get("/organizations/:id", "application/json", (req, res) -> {
-<<<<<<< HEAD
             int organizationId = Integer.parseInt(req.params("id"));
 
             Organization organizationToFind = organizationDao.findById(organizationId);
@@ -169,19 +168,6 @@ public class App {
 
         get("/services/:id", "application");
 
-=======
-           int organizationId = Integer.parseInt(req.params("id"));
-
-           Organization requestedOrganization = organizationDao.findById(organizationId);
-
-//           if (requestedOrganization == null) {
-//               throw new ApiException(404, String.format("No organization with the id: \"%s\" exists", req.params("id")));
-//           }
-
-           return gson.toJson(requestedOrganization);
-        });
-
->>>>>>> 6d5dd287061aaaabc2b4b0d99c99afc104a8fe0c
         // UPDATE
 
 
