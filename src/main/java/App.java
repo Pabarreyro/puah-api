@@ -39,10 +39,17 @@ public class App {
 
         // CREATE
         post("/organizations/new", "application/json", (req, res) -> {
-            Organization newOrganization = gson.fromJson(req.body(), Organization.class);
-            organizationDao.add(newOrganization);
+            HashMap<String, Object[]> requestBody = gson.fromJson(req.body(), HashMap.class);
+
+            // Parse Organization Out
+
+            // Parse Services[] out
+
+            // Parse Communities[] out
+
+            gson.fromJson(req.body(), Organization.class);
             res.status(201);
-            return gson.toJson(newOrganization);
+            return gson.toJson(requestBody);
         });
 
         post("/services/new", "application/json", (req, res) -> {
