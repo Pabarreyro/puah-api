@@ -1,2 +1,2 @@
-DROP DATABASE resources_test;
-DROP DATABASE resources;
+DROP DATABASE puah_test;
+DROP DATABASE puah;
