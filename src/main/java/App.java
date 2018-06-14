@@ -206,19 +206,30 @@ public class App {
         // UPDATE
         post("/organizations/:id/update", "application/json", (req, res) ->{
             Organization updatedOrganization = gson.fromJson(req.body(), Organization.class);
-            organizationDao.update();
+            organizationDao.update(updatedOrganization);
+            res.status(201);
+            return gson.toJson(updatedOrganization);
         });
 
         post("/communities/:id/update", "application/json", (req, res) ->{
-
-        });
+            Community updatedCommunity = gson.fromJson(req.body(), Community.class);
+            communityDao.update(updatedCommunity);
+            res.status(201);
+            return gson.toJson(updatedCommunity);
+         });
 
         post("/regions/:id/update", "application/json", (req, res) ->{
-
+            Region updatedRegion= gson.fromJson(req.body(), Region.class);
+            regionDao.update(updatedRegion);
+            res.status(201);
+            return gson.toJson(updatedRegion);
         });
 
         post("/services/:id/update", "application/json", (req, res) ->{
-
+            Region updatedRegion= gson.fromJson(req.body(), Region.class);
+            regionDao.update(updatedRegion);
+            res.status(201);
+            return gson.toJson(updatedRegion);
         });
 
 
