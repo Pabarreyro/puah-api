@@ -242,6 +242,31 @@ public class App {
             return String.format("{\"message\": \" %s has been removed from your organizations.\"}", organizationName);
         });
 
+        post("/communities/:id/delete", "application/json", (req, res) -> {
+            int communityId = Integer.parseInt(req.params("id"));
+            String communityName = communityDao.findById(communityId).getName();
+            communityDao.deleteById(communityId);
+            res.status(200);
+            return String.format("{\"message\": \" %s has been removed from your communities.\"}", communityName);
+        });
+
+        post("/services/:id/delete", "application/json", (req, res) -> {
+            int serviceId = Integer.parseInt(req.params("id"));
+            String serviceName = serviceDao.findById(serviceId).getName();
+            serviceDao.deleteById(serviceId);
+            res.status(200);
+            return String.format("{\"message\": \" %s has been removed from your services.\"}", serviceName);
+        });
+
+        post("/regions/:id/delete", "application/json", (req, res) -> {
+            int regionId = Integer.parseInt(req.params("id"));
+            String regionName = regionDao.findById(regionId).getName();
+            regionDao.deleteById(regionId);
+            res.status(200);
+            return String.format("{\"message\": \" %s has been removed from your regions.\"}", regionName);
+        });
+
+
 
         // FILTER
         after((req, res) ->{
