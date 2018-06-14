@@ -28,7 +28,7 @@ public class App {
         Connection conn;
         Gson gson = new Gson();
 
-        String connectionString = "jdbc:postgresql://localhost:5432/resources";
+        String connectionString = "jdbc:postgresql://localhost:5432/puah";
         Sql2o sql2o = new Sql2o(connectionString, null, null);
 
         organizationDao = new Sql2oOrganizationDao(sql2o);
@@ -232,10 +232,15 @@ public class App {
             return gson.toJson(updatedRegion);
         });
 
-
-
         // DELETE
 
+        post("/oganizations/:id/delete", "application/json", (req, res) -> {
+            int organizationId = Integer.parseInt(req.params("id"));
+            String organizationName = organizationDao.findById(organizationId).getName();
+            organizationDao.deleteById(organizationId);
+            res.status(200);
+            return String.format("{\"message\": \" %s has been removed from your organizations.\"}", organizationName);
+        });
 
 
         // FILTER
