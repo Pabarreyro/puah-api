@@ -94,6 +94,18 @@ public class Sql2oServiceDaoTest {
     }
 
     @Test
+    public void deleteById_deletesAllAssociatedJoins() throws Exception {
+        Organization testOrganization = setUpOrganization();
+
+        Service testService = setUpService();
+        int serviceId = testService.getId();
+
+        serviceDao.addServiceToOrganization(testService, testOrganization);
+        serviceDao.deleteById(serviceId);
+        assertEquals(0, serviceDao.getAllOrganizations(serviceId).size());
+    }
+
+    @Test
     public void clearAll_deletesAllExistingServices() throws Exception {
         Service testService = setUpService();
         Service altTestService = setUpAltService();

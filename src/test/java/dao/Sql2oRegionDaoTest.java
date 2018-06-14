@@ -94,6 +94,18 @@ public class Sql2oRegionDaoTest {
     }
 
     @Test
+    public void deleteById_deletesAllAssociatedJoins() throws Exception {
+        Organization testOrganization = setUpOrganization();
+
+        Region testRegion = setUpRegion();
+        int regionId = testRegion.getId();
+
+        regionDao.addRegionToOrganization(testRegion, testOrganization);
+        regionDao.deleteById(regionId);
+        assertEquals(0, regionDao.getAllOrganizations(regionId).size());
+    }
+
+    @Test
     public void clearAll_deletesAllExistingRegions() throws Exception {
         Region testRegion = setUpRegion();
         Region altTestRegion = setUpAltRegion();

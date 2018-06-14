@@ -134,6 +134,24 @@ public class Sql2oOrganizationDaoTest {
     }
 
     @Test
+    public void deleteById_deletesAllAssociatedJoins() throws Exception {
+        Organization testOrganization = setUpOrganization();
+        int organizationId = testOrganization.getId();
+        Service testService = setUpService();
+        Community testCommunity = setUpCommunity();
+        Region testRegion = setUpRegion();
+
+        organizationDao.addOrganizationToCommunity(testOrganization, testCommunity);
+        organizationDao.addOrganizationToService(testOrganization, testService);
+        organizationDao.addOrganizationToRegion(testOrganization, testRegion);
+
+        organizationDao.deleteById(organizationId);
+        assertEquals(0, organizationDao.getAllServices(organizationId).size());
+        assertEquals(0, organizationDao.getAllCommunities(organizationId).size());
+        assertEquals(0, organizationDao.getAllRegions(organizationId).size());
+    }
+
+    @Test
     public void clearAll_deletesAllExistingOrganizations() throws Exception {
         Organization testOrganization = setUpOrganization();
         Organization altTestOrganization = setUpAltOrganization();

@@ -94,6 +94,18 @@ public class Sql2oCommunityDaoTest {
     }
 
     @Test
+    public void deleteById_deletesAllAssociatedJoins() throws Exception {
+        Organization testOrganization = setUpOrganization();
+
+        Community testCommunity = setUpCommunity();
+        int communityId = testCommunity.getId();
+
+        communityDao.addCommunityToOrganization(testCommunity, testOrganization);
+        communityDao.deleteById(communityId);
+        assertEquals(0, communityDao.getAllOrganizations(communityId).size());
+    }
+
+    @Test
     public void clearAll_deletesAllExistingOrganizations() throws Exception {
         Community testCommunity = setUpCommunity();
         Community altTestCommunity = setUpAltCommunity();
