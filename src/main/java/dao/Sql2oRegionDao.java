@@ -94,7 +94,7 @@ public class Sql2oRegionDao implements RegionDao{
 
     @Override
     public void deleteById(int id) {
-        String sql= "DELETE from regions WHERE =";
+        String sql= "DELETE from regions WHERE id = :id";
         String deleteOrganizationJoin = "DELETE from organizations_regions WHERE regionId = :regionId";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
