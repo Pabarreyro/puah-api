@@ -234,7 +234,7 @@ public class App {
 
         // DELETE
 
-        post("/oganizations/:id/delete", "application/json", (req, res) -> {
+        post("/organizations/:id/delete", "application/json", (req, res) -> {
             int organizationId = Integer.parseInt(req.params("id"));
             String organizationName = organizationDao.findById(organizationId).getName();
             organizationDao.deleteById(organizationId);
@@ -265,8 +265,6 @@ public class App {
             res.status(200);
             return String.format("{\"message\": \" %s has been removed from your regions.\"}", regionName);
         });
-
-
 
         // FILTER
         after((req, res) ->{
