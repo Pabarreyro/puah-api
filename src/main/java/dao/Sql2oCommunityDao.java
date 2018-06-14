@@ -81,13 +81,11 @@ public class Sql2oCommunityDao implements CommunityDao {
     }
 
     @Override
-    public void update(int id, String name, String type) {
+    public void update(Community community) {
         String sql = "UPDATE communities SET (name, type) = (:name, :type) WHERE id = :id";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
-                    .addParameter("id", id)
-                    .addParameter("name", name)
-                    .addParameter("type", type)
+                    .bind(community)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);
@@ -96,9 +94,14 @@ public class Sql2oCommunityDao implements CommunityDao {
 
     @Override
     public void deleteById(int id) {
+        String sql = "DELETE from communities WHERE id = :id";
+        String deleteOrganizationJoin = "DELETE from organizations_communities WHERE communityId = :communityId";
         try (Connection con = sql2o.open()) {
-            con.createQuery("DELETE from communities WHERE id = :id")
+            con.createQuery(sql)
                     .addParameter("id", id)
+                    .executeUpdate();
+            con.createQuery(deleteOrganizationJoin)
+                    .addParameter("communityId", id)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);

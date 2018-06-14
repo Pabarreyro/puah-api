@@ -81,12 +81,11 @@ public class Sql2oServiceDao implements ServiceDao{
     }
 
     @Override
-    public void update(int id, String name) {
+    public void update(Service service) {
         String sql = "UPDATE services SET name = :name WHERE id = :id";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
-                    .addParameter("id", id)
-                    .addParameter("name", name)
+                    .bind(service)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);
@@ -95,9 +94,14 @@ public class Sql2oServiceDao implements ServiceDao{
 
     @Override
     public void deleteById(int id) {
+        String sql = "DELETE from services WHERE id = :id";
+        String deleteOrganizationJoin = "DELETE from organizations_services WHERE serviceId = :serviceId";
         try (Connection con = sql2o.open()) {
-            con.createQuery("DELETE from services WHERE id = :id")
+            con.createQuery(sql)
                     .addParameter("id", id)
+                    .executeUpdate();
+            con.createQuery(deleteOrganizationJoin)
+                    .addParameter("serviceId", id)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);
