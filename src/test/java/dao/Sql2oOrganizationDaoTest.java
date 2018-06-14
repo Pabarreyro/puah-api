@@ -21,7 +21,7 @@ public class Sql2oOrganizationDaoTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        String connectionString = "jdbc:postgresql://localhost:5432/resources_test";
+        String connectionString = "jdbc:postgresql://localhost:5432/puah_test";
         Sql2o sql2o = new Sql2o(connectionString, null, null);
         organizationDao = new Sql2oOrganizationDao(sql2o);
         serviceDao = new Sql2oServiceDao(sql2o);
@@ -116,10 +116,10 @@ public class Sql2oOrganizationDaoTest {
         testUpdatedOrganization.setId(testOrganization.getId());
         organizationDao.update(testUpdatedOrganization);
         Organization newOrganization = organizationDao.findById(testUpdatedOrganization.getId());
-        assertEquals("Coalition of Communities of Color", newOrganization.getName());
-        assertEquals("211 NW 3rd Ave", newOrganization.getAddress());
-        assertEquals("97202", newOrganization.getZip());
-        assertEquals("517-286-5722", newOrganization.getPhone());
+        assertEquals(testUpdatedOrganization.getName(), newOrganization.getName());
+        assertEquals(testUpdatedOrganization.getAddress(), newOrganization.getAddress());
+        assertEquals(testUpdatedOrganization.getZip(), newOrganization.getZip());
+        assertEquals(testUpdatedOrganization.getPhone(), newOrganization.getPhone());
         assertEquals(testUpdatedOrganization.getWebsite(), newOrganization.getWebsite());
         assertEquals(testUpdatedOrganization.getEmail(), newOrganization.getEmail());
     }

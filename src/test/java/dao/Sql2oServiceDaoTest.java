@@ -16,7 +16,7 @@ public class Sql2oServiceDaoTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        String connectionString = "jdbc:postgresql://localhost:5432/resources_test";
+        String connectionString = "jdbc:postgresql://localhost:5432/puah_test";
         Sql2o sql2o = new Sql2o(connectionString, null, null);
         organizationDao = new Sql2oOrganizationDao(sql2o);
         serviceDao = new Sql2oServiceDao(sql2o);
@@ -77,9 +77,11 @@ public class Sql2oServiceDaoTest {
     @Test
     public void update_correctlyUpdatesService() throws Exception {
         Service testService = setUpService();
-        serviceDao.update(testService.getId(), "Support");
+        Service altTestService = new Service("Support");
+        altTestService.setId(testService.getId());
+        serviceDao.update(altTestService);
         Service updatedService = serviceDao.findById(testService.getId());
-        assertEquals("Support", updatedService.getName());
+        assertEquals(altTestService.getName(), updatedService.getName());
     }
 
     @Test

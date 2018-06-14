@@ -16,7 +16,7 @@ public class Sql2oCommunityDaoTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        String connectionString = "jdbc:postgresql://localhost:5432/resources_test";
+        String connectionString = "jdbc:postgresql://localhost:5432/puah_test";
         Sql2o sql2o = new Sql2o(connectionString, null, null);
         organizationDao = new Sql2oOrganizationDao(sql2o);
         communityDao = new Sql2oCommunityDao(sql2o);
@@ -77,10 +77,12 @@ public class Sql2oCommunityDaoTest {
     @Test
     public void update_correctlyUpdatesCommunity() throws Exception {
         Community testCommunity = setUpCommunity();
-        communityDao.update(testCommunity.getId(), "gender fluid", "gender identity");
+        Community altTestCommunity = new Community("gender fluid", "gender identity");
+        altTestCommunity.setId(testCommunity.getId());
+        communityDao.update(altTestCommunity);
         Community updatedCommunity = communityDao.findById(testCommunity.getId());
-        assertNotEquals(testCommunity.getName(), updatedCommunity.getName());
-        assertEquals(testCommunity.getType(), updatedCommunity.getType());
+        assertEquals(altTestCommunity.getName(), updatedCommunity.getName());
+        assertEquals(altTestCommunity.getType(), updatedCommunity.getType());
     }
 
     @Test
