@@ -13,9 +13,6 @@ public class Report {
     public Report(int reporterId, int incidentId) {
         this.reporterId = reporterId;
         this.incidentId = incidentId;
-        this.dateFiled =;
-        this.timeFiled =;
-        this.confirmationNumber =;
     }
 }
 
