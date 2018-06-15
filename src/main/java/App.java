@@ -107,9 +107,19 @@ public class App {
         get("/organizations", "application/json", (req, res) -> {
             List<Organization> allOrgs = organizationDao.getAll();
             ArrayList<Organization> filteredOrgs = new ArrayList<>();
-            String[] serviceIds = req.queryParamsValues("service");
-            String[] communityIds = req.queryParamsValues("community");
-            String[] regionIds = req.queryParamsValues("region");
+            String[] serviceIds = {};
+            String[] communityIds = {};
+            String[] regionIds = {};
+
+            if (req.queryParams("service") != null) {
+                serviceIds = req.queryParamsValues("service");
+            }
+            if (req.queryParams("community") != null) {
+                communityIds = req.queryParamsValues("community");
+            }
+            if (req.queryParams("region") != null) {
+                regionIds = req.queryParamsValues("region");
+            }
 
             if (serviceIds.length > 0 ) {
                 for (String serviceId : serviceIds) {
