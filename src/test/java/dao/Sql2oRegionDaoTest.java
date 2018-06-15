@@ -16,7 +16,7 @@ public class Sql2oRegionDaoTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        String connectionString = "jdbc:postgresql://localhost:5432/resources_test";
+        String connectionString = "jdbc:postgresql://localhost:5432/puah_test";
         Sql2o sql2o = new Sql2o(connectionString, null, null);
         organizationDao = new Sql2oOrganizationDao(sql2o);
         regionDao = new Sql2oRegionDao(sql2o);
@@ -77,9 +77,11 @@ public class Sql2oRegionDaoTest {
     @Test
     public void update_correctlyUpdatesRegion() throws Exception {
         Region testRegion = setUpRegion();
-        regionDao.update(testRegion.getId(), "Outer NE");
+        Region altTestRegion = new Region("Outer NE");
+        altTestRegion.setId(testRegion.getId());
+        regionDao.update(altTestRegion);
         Region updatedRegion = regionDao.findById(testRegion.getId());
-        assertEquals("Outer NE", updatedRegion.getName());
+        assertEquals(altTestRegion.getName(), updatedRegion.getName());
     }
 
     @Test
@@ -89,6 +91,18 @@ public class Sql2oRegionDaoTest {
         regionDao.deleteById(altTestRegion.getId());
         assertEquals(testRegion, regionDao.getAll().get(0));
         assertEquals(1, regionDao.getAll().size());
+    }
+
+    @Test
+    public void deleteById_deletesAllAssociatedJoins() throws Exception {
+        Organization testOrganization = setUpOrganization();
+
+        Region testRegion = setUpRegion();
+        int regionId = testRegion.getId();
+
+        regionDao.addRegionToOrganization(testRegion, testOrganization);
+        regionDao.deleteById(regionId);
+        assertEquals(0, regionDao.getAllOrganizations(regionId).size());
     }
 
     @Test

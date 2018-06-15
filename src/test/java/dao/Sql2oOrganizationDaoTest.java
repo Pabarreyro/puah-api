@@ -21,7 +21,7 @@ public class Sql2oOrganizationDaoTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        String connectionString = "jdbc:postgresql://localhost:5432/resources_test";
+        String connectionString = "jdbc:postgresql://localhost:5432/puah_test";
         Sql2o sql2o = new Sql2o(connectionString, null, null);
         organizationDao = new Sql2oOrganizationDao(sql2o);
         serviceDao = new Sql2oServiceDao(sql2o);
@@ -112,14 +112,16 @@ public class Sql2oOrganizationDaoTest {
     @Test
     public void update_correctlyUpdatesOrganization() throws Exception {
         Organization testOrganization = setUpOrganization();
-        organizationDao.update(testOrganization.getId(), "Coalition of Communities of Color", "211 NW 3rd Ave", "97202", "517-286-5722", "www.ccc.org", "info@ccc.org");
-        Organization updatedOrganization = organizationDao.findById(testOrganization.getId());
-        assertEquals("Coalition of Communities of Color", updatedOrganization.getName());
-        assertEquals("211 NW 3rd Ave", updatedOrganization.getAddress());
-        assertEquals("97202", updatedOrganization.getZip());
-        assertEquals("517-286-5722", updatedOrganization.getPhone());
-        assertEquals("www.ccc.org", updatedOrganization.getWebsite());
-        assertEquals("info@ccc.org", updatedOrganization.getEmail());
+        Organization testUpdatedOrganization = new Organization("Coalition of Communities of Color", "211 NW 3rd Ave", "97202", "517-286-5722");
+        testUpdatedOrganization.setId(testOrganization.getId());
+        organizationDao.update(testUpdatedOrganization);
+        Organization newOrganization = organizationDao.findById(testUpdatedOrganization.getId());
+        assertEquals(testUpdatedOrganization.getName(), newOrganization.getName());
+        assertEquals(testUpdatedOrganization.getAddress(), newOrganization.getAddress());
+        assertEquals(testUpdatedOrganization.getZip(), newOrganization.getZip());
+        assertEquals(testUpdatedOrganization.getPhone(), newOrganization.getPhone());
+        assertEquals(testUpdatedOrganization.getWebsite(), newOrganization.getWebsite());
+        assertEquals(testUpdatedOrganization.getEmail(), newOrganization.getEmail());
     }
 
     @Test
@@ -129,6 +131,24 @@ public class Sql2oOrganizationDaoTest {
         organizationDao.deleteById(altTestOrganization.getId());
         assertEquals(testOrganization, organizationDao.getAll().get(0));
         assertEquals(1, organizationDao.getAll().size());
+    }
+
+    @Test
+    public void deleteById_deletesAllAssociatedJoins() throws Exception {
+        Organization testOrganization = setUpOrganization();
+        int organizationId = testOrganization.getId();
+        Service testService = setUpService();
+        Community testCommunity = setUpCommunity();
+        Region testRegion = setUpRegion();
+
+        organizationDao.addOrganizationToCommunity(testOrganization, testCommunity);
+        organizationDao.addOrganizationToService(testOrganization, testService);
+        organizationDao.addOrganizationToRegion(testOrganization, testRegion);
+
+        organizationDao.deleteById(organizationId);
+        assertEquals(0, organizationDao.getAllServices(organizationId).size());
+        assertEquals(0, organizationDao.getAllCommunities(organizationId).size());
+        assertEquals(0, organizationDao.getAllRegions(organizationId).size());
     }
 
     @Test

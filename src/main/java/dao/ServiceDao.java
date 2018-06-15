@@ -17,7 +17,7 @@ public interface ServiceDao {
     List<Organization> getAllOrganizations(int id);
 
     // UPDATE
-    void update(int id, String name);
+    void update(Service service);
 
     // DELETE
     void deleteById(int id);

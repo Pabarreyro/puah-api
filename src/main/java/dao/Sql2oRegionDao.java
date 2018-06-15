@@ -81,12 +81,11 @@ public class Sql2oRegionDao implements RegionDao{
     }
 
     @Override
-    public void update(int id, String name) {
+    public void update(Region region) {
         String sql = "UPDATE regions SET name = :name WHERE id = :id";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
-                    .addParameter("id", id)
-                    .addParameter("name", name)
+                    .bind(region)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);
@@ -95,9 +94,14 @@ public class Sql2oRegionDao implements RegionDao{
 
     @Override
     public void deleteById(int id) {
+        String sql= "DELETE from regions WHERE id = :id";
+        String deleteOrganizationJoin = "DELETE from organizations_regions WHERE regionId = :regionId";
         try (Connection con = sql2o.open()) {
-            con.createQuery("DELETE from regions WHERE id = :id ")
+            con.createQuery(sql)
                     .addParameter("id", id)
+                    .executeUpdate();
+            con.createQuery(deleteOrganizationJoin)
+                    .addParameter("regionId", id)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);

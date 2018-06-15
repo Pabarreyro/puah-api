@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import dao.Sql2oCommunityDao;
 import dao.Sql2oOrganizationDao;
 import dao.Sql2oRegionDao;
@@ -28,7 +29,7 @@ public class App {
         Connection conn;
         Gson gson = new Gson();
 
-        String connectionString = "jdbc:postgresql://localhost:5432/resources";
+        String connectionString = "jdbc:postgresql://localhost:5432/puah";
         Sql2o sql2o = new Sql2o(connectionString, null, null);
 
         organizationDao = new Sql2oOrganizationDao(sql2o);
@@ -40,17 +41,45 @@ public class App {
 
         // CREATE
         post("/organizations/new", "application/json", (req, res) -> {
-            HashMap<String, Object[]> requestBody = gson.fromJson(req.body(), HashMap.class);
+            HashMap<String, ArrayList<LinkedTreeMap<String, String>>> requestBody = gson.fromJson(req.body(), HashMap.class);
+            LinkedTreeMap<String, String> sentOrganization = requestBody.get("organization").get(0);
 
             // Parse Organization Out
+            String name = sentOrganization.get("name");
+            String address = sentOrganization.get("address");
+            String zip = sentOrganization.get("zip");
+            String phone = sentOrganization.get("phone");
+            String website = sentOrganization.get("website");
+            String email = sentOrganization.get("email");
+            Organization newOrganization = new Organization(name, address, zip, phone, website, email);
+            organizationDao.add(newOrganization);
 
-            // Parse Services[] out
+            // Parse Services out
+            for (LinkedTreeMap<String, String> service : requestBody.get("services")) {
+                int serviceId = Integer.parseInt(service.get("id"));
+                Service associatedService = serviceDao.findById(serviceId);
+                organizationDao.addOrganizationToService(newOrganization, associatedService);
+                System.out.println(serviceDao.getAllOrganizations(serviceId).size());
+            }
 
-            // Parse Communities[] out
+            // Parse Communities out
+            for (LinkedTreeMap<String, String> community : requestBody.get("communities")) {
+                int communityId = Integer.parseInt(community.get("id"));
+                Community associatedCommunity = communityDao.findById(communityId);
+                organizationDao.addOrganizationToCommunity(newOrganization, associatedCommunity);
+                System.out.println(communityDao.getAllOrganizations(communityId).size());
+            }
 
-            gson.fromJson(req.body(), Organization.class);
+            // Parse Regions out
+            for (LinkedTreeMap<String, String> region : requestBody.get("regions")) {
+                int regionId = Integer.parseInt(region.get("id"));
+                Region associatedRegion = regionDao.findById(regionId);
+                organizationDao.addOrganizationToRegion(newOrganization, associatedRegion);
+                System.out.println(regionDao.getAllOrganizations(regionId).size());
+            }
+
             res.status(201);
-            return gson.toJson(requestBody);
+            return gson.toJson(newOrganization);
         });
 
         post("/services/new", "application/json", (req, res) -> {
@@ -159,22 +188,112 @@ public class App {
 
             Organization organizationToFind = organizationDao.findById(organizationId);
 
-            if (organizationToFind == null){
+            if (organizationToFind == null) {
                 throw new ApiException(404, String.format("No organization with the id: \"%s\" exists", req.params("id")));
             }
 
             return gson.toJson(organizationDao.findById(organizationId));
         });
 
-        get("/services/:id", "application");
+        get("/services/:id", "application/json", (req, res) -> {
+            int serviceId = Integer.parseInt(req.params("id"));
+
+
+            Service serviceToFind = serviceDao.findById(serviceId);
+
+            if (serviceToFind == null) {
+                throw new ApiException(404, String.format("No organization with the id: \"%s\" exists", req.params("id")));
+            }
+
+            return gson.toJson(serviceDao.findById(serviceId));
+        });
+
+        get("/communities/:id", "application/json", (req, res) -> {
+            int communityId = Integer.parseInt(req.params("id"));
+
+            Community communityToFind = communityDao.findById(communityId);
+
+            if (communityToFind == null) {
+                throw new ApiException(404, String.format("No community with the id: \"%s\" exists", req.params("id")));
+            }
+
+            return gson.toJson(communityDao.findById(communityId));
+        });
+
+        get("/regions/:id", "application/json", (req, res) -> {
+            int regionId = Integer.parseInt(req.params("id"));
+
+            Region regionToFind = regionDao.findById(regionId);
+
+            if (regionToFind == null) {
+                throw new ApiException(404, String.format("No region with the id: \"%s\" exists", req.params("id")));
+            }
+
+            return gson.toJson(regionDao.findById(regionId));
+        });
 
         // UPDATE
+        post("/organizations/:id/update", "application/json", (req, res) ->{
+            Organization updatedOrganization = gson.fromJson(req.body(), Organization.class);
+            organizationDao.update(updatedOrganization);
+            res.status(201);
+            return gson.toJson(updatedOrganization);
+        });
 
+        post("/communities/:id/update", "application/json", (req, res) ->{
+            Community updatedCommunity = gson.fromJson(req.body(), Community.class);
+            communityDao.update(updatedCommunity);
+            res.status(201);
+            return gson.toJson(updatedCommunity);
+         });
 
+        post("/regions/:id/update", "application/json", (req, res) ->{
+            Region updatedRegion= gson.fromJson(req.body(), Region.class);
+            regionDao.update(updatedRegion);
+            res.status(201);
+            return gson.toJson(updatedRegion);
+        });
+
+        post("/services/:id/update", "application/json", (req, res) ->{
+            Region updatedRegion= gson.fromJson(req.body(), Region.class);
+            regionDao.update(updatedRegion);
+            res.status(201);
+            return gson.toJson(updatedRegion);
+        });
 
         // DELETE
 
+        post("/organizations/:id/delete", "application/json", (req, res) -> {
+            int organizationId = Integer.parseInt(req.params("id"));
+            String organizationName = organizationDao.findById(organizationId).getName();
+            organizationDao.deleteById(organizationId);
+            res.status(200);
+            return String.format("{\"message\": \" %s has been removed from your organizations.\"}", organizationName);
+        });
 
+        post("/communities/:id/delete", "application/json", (req, res) -> {
+            int communityId = Integer.parseInt(req.params("id"));
+            String communityName = communityDao.findById(communityId).getName();
+            communityDao.deleteById(communityId);
+            res.status(200);
+            return String.format("{\"message\": \" %s has been removed from your communities.\"}", communityName);
+        });
+
+        post("/services/:id/delete", "application/json", (req, res) -> {
+            int serviceId = Integer.parseInt(req.params("id"));
+            String serviceName = serviceDao.findById(serviceId).getName();
+            serviceDao.deleteById(serviceId);
+            res.status(200);
+            return String.format("{\"message\": \" %s has been removed from your services.\"}", serviceName);
+        });
+
+        post("/regions/:id/delete", "application/json", (req, res) -> {
+            int regionId = Integer.parseInt(req.params("id"));
+            String regionName = regionDao.findById(regionId).getName();
+            regionDao.deleteById(regionId);
+            res.status(200);
+            return String.format("{\"message\": \" %s has been removed from your regions.\"}", regionName);
+        });
 
         // FILTER
         after((req, res) ->{
@@ -190,16 +309,5 @@ public class App {
             res.status(err.getStatusCode());
             res.body(gson.toJson(jsonMap));
         });
-    }
-
-    // Helper
-    public static ArrayList<Integer> parseQuery(String query) {
-        ArrayList<Integer> queryValues = new ArrayList<>();
-        String[] parsedQuery = query.split(",");
-        for (String queryValue : parsedQuery) {
-            int serviceId = Integer.parseInt(queryValue);
-            queryValues.add(serviceId);
-        }
-        return queryValues;
     }
 }

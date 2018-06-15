@@ -151,17 +151,11 @@ public class Sql2oOrganizationDao implements OrganizationDao {
     }
 
     @Override
-    public void update(int id, String name, String address, String zip, String phone, String website, String email) {
+    public void update(Organization organization) {
         String sql = "UPDATE organizations SET (name, address, zip, phone, website, email) = (:name, :address, :zip, :phone, :website, :email) WHERE id = :id";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
-                    .addParameter("id", id)
-                    .addParameter("name", name)
-                    .addParameter("address", address)
-                    .addParameter("zip", zip)
-                    .addParameter("phone", phone)
-                    .addParameter("website", website)
-                    .addParameter("email", email)
+                    .bind(organization)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);
@@ -170,9 +164,22 @@ public class Sql2oOrganizationDao implements OrganizationDao {
 
     @Override
     public void deleteById(int id) {
+        String sql = "DELETE from organizations WHERE id = :id";
+        String deleteServiceJoin = "DELETE from organizations_services WHERE organizationId = :organizationId";
+        String deleteCommunityJoin = "DELETE from organizations_communities WHERE organizationId = :organizationId";
+        String deleteRegionJoin = "DELETE from organizations_regions WHERE organizationId = :organizationId";
         try (Connection con = sql2o.open()) {
-            con.createQuery("DELETE from organizations WHERE id = :id")
+            con.createQuery(sql)
                     .addParameter("id", id)
+                    .executeUpdate();
+            con.createQuery(deleteServiceJoin)
+                    .addParameter("organizationId", id)
+                    .executeUpdate();
+            con.createQuery(deleteCommunityJoin)
+                    .addParameter("organizationId", id)
+                    .executeUpdate();
+            con.createQuery(deleteRegionJoin)
+                    .addParameter("organizationId", id)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);
