@@ -310,15 +310,4 @@ public class App {
             res.body(gson.toJson(jsonMap));
         });
     }
-
-    // Helper
-    public static ArrayList<Integer> parseQuery(String query) {
-        ArrayList<Integer> queryValues = new ArrayList<>();
-        String[] parsedQuery = query.split(",");
-        for (String queryValue : parsedQuery) {
-            int serviceId = Integer.parseInt(queryValue);
-            queryValues.add(serviceId);
-        }
-        return queryValues;
-    }
 }
