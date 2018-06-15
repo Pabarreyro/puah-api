@@ -9,7 +9,6 @@ import models.Community;
 import models.Organization;
 import models.Region;
 import models.Service;
-import org.omg.CORBA.Any;
 import org.sql2o.*;
 
 import java.util.ArrayList;
@@ -215,7 +214,11 @@ public class App {
                 throw new ApiException(404, String.format("No organization with the id: \"%s\" exists", req.params("id")));
             }
 
-            return gson.toJson(organizationDao.findById(organizationId));
+            organizationToFind.setCommunities(organizationDao.getAllCommunities(organizationId));
+            organizationToFind.setServices(organizationDao.getAllServices(organizationId));
+            organizationToFind.setRegions(organizationDao.getAllRegions(organizationId));
+
+            return gson.toJson(organizationToFind);
         });
 
         get("/services/:id", "application/json", (req, res) -> {
