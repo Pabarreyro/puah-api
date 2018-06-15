@@ -1,5 +1,7 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Organization {
@@ -9,6 +11,9 @@ public class Organization {
     private String phone;
     private String website;
     private String email;
+    private List<Service> services;
+    private List<Community> communities;
+    private List<Region> regions;
     private int id;
 
     public Organization(String name, String address, String zip, String phone) {
@@ -18,6 +23,9 @@ public class Organization {
         this.phone = phone;
         this.website = "website unavailable";
         this.email = "email unavailable";
+        services = new ArrayList<>();
+        communities = new ArrayList<>();
+        regions = new ArrayList<>();
     }
 
     public Organization(String name, String address, String zip, String phone, String website, String email) {
@@ -83,6 +91,30 @@ public class Organization {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public List<Service> getServices() {
+        return services;
+    }
+
+    public void setServices(List<Service> services) {
+        this.services = services;
+    }
+
+    public List<Community> getCommunities() {
+        return communities;
+    }
+
+    public void setCommunities(List<Community> communities) {
+        this.communities = communities;
+    }
+
+    public List<Region> getRegions() {
+        return regions;
+    }
+
+    public void setRegions(List<Region> regions) {
+        this.regions = regions;
     }
 
     @Override

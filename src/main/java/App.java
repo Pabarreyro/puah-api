@@ -9,7 +9,6 @@ import models.Community;
 import models.Organization;
 import models.Region;
 import models.Service;
-import org.omg.CORBA.Any;
 import org.sql2o.*;
 
 import java.util.ArrayList;
@@ -107,9 +106,20 @@ public class App {
         get("/organizations", "application/json", (req, res) -> {
             List<Organization> allOrgs = organizationDao.getAll();
             ArrayList<Organization> filteredOrgs = new ArrayList<>();
-            String[] serviceIds = req.queryParamsValues("service");
-            String[] communityIds = req.queryParamsValues("community");
-            String[] regionIds = req.queryParamsValues("region");
+
+            String[] serviceIds = {};
+            String[] communityIds = {};
+            String[] regionIds = {};
+
+            if (req.queryParams("service") != null) {
+                serviceIds = req.queryParamsValues("service");
+            }
+            if (req.queryParams("community") != null) {
+                communityIds = req.queryParamsValues("community");
+            }
+            if (req.queryParams("region") != null) {
+                regionIds = req.queryParamsValues("region");
+            }
 
             if (serviceIds.length > 0 ) {
                 for (String serviceId : serviceIds) {
@@ -145,8 +155,20 @@ public class App {
                 }
             }
             if (filteredOrgs.size() > 0) {
+                for (Organization org : filteredOrgs){
+                    int orgId = org.getId();
+                    org.setServices(organizationDao.getAllServices(orgId));
+                    org.setCommunities(organizationDao.getAllCommunities(orgId));
+                    org.setRegions(organizationDao.getAllRegions(orgId));
+                }
                 return gson.toJson(filteredOrgs);
             } else if (allOrgs.size() > 0){
+                for (Organization org : allOrgs){
+                    int orgId = org.getId();
+                    org.setServices(organizationDao.getAllServices(orgId));
+                    org.setCommunities(organizationDao.getAllCommunities(orgId));
+                    org.setRegions(organizationDao.getAllRegions(orgId));
+                }
                 return gson.toJson(allOrgs);
             } else {
                 return "{\"message\":\"I'm sorry, but no organizations are currently listed in the database.\"}";
@@ -192,7 +214,11 @@ public class App {
                 throw new ApiException(404, String.format("No organization with the id: \"%s\" exists", req.params("id")));
             }
 
-            return gson.toJson(organizationDao.findById(organizationId));
+            organizationToFind.setCommunities(organizationDao.getAllCommunities(organizationId));
+            organizationToFind.setServices(organizationDao.getAllServices(organizationId));
+            organizationToFind.setRegions(organizationDao.getAllRegions(organizationId));
+
+            return gson.toJson(organizationToFind);
         });
 
         get("/services/:id", "application/json", (req, res) -> {
