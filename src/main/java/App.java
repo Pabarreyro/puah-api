@@ -107,6 +107,7 @@ public class App {
         get("/organizations", "application/json", (req, res) -> {
             List<Organization> allOrgs = organizationDao.getAll();
             ArrayList<Organization> filteredOrgs = new ArrayList<>();
+
             String[] serviceIds = {};
             String[] communityIds = {};
             String[] regionIds = {};
@@ -155,8 +156,20 @@ public class App {
                 }
             }
             if (filteredOrgs.size() > 0) {
+                for (Organization org : filteredOrgs){
+                    int orgId = org.getId();
+                    org.setServices(organizationDao.getAllServices(orgId));
+                    org.setCommunities(organizationDao.getAllCommunities(orgId));
+                    org.setRegions(organizationDao.getAllRegions(orgId));
+                }
                 return gson.toJson(filteredOrgs);
             } else if (allOrgs.size() > 0){
+                for (Organization org : allOrgs){
+                    int orgId = org.getId();
+                    org.setServices(organizationDao.getAllServices(orgId));
+                    org.setCommunities(organizationDao.getAllCommunities(orgId));
+                    org.setRegions(organizationDao.getAllRegions(orgId));
+                }
                 return gson.toJson(allOrgs);
             } else {
                 return "{\"message\":\"I'm sorry, but no organizations are currently listed in the database.\"}";
