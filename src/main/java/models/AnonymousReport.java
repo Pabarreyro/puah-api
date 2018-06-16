@@ -1,15 +1,13 @@
 package models;
 
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Objects;
 
 public class AnonymousReport extends Report {
     private int id;
     private long dateTimeFiled;
     private String formattedDateTime;
-    private String confirmationNumber;
+    private String confirmationCode;
     private ArrayList<String> selfIdentifiers;
     private static final String DATABASE_TYPE = "Anonymous";
 
@@ -34,7 +32,7 @@ public class AnonymousReport extends Report {
             String additionalNotes
     ) {
         this.dateTimeFiled = System.currentTimeMillis();
-        this.confirmationNumber = "";
+        this.confirmationCode = "";
         type = DATABASE_TYPE;
         this.reporterRole = reporterRole ;
         this.reporterAge = reporterAge ;
@@ -64,12 +62,12 @@ public class AnonymousReport extends Report {
         this.id = id;
     }
 
-    public String getConfirmationNumber() {
-        return confirmationNumber;
+    public String getConfirmationCode() {
+        return confirmationCode;
     }
 
-    public void setConfirmationNumber(String confirmationNumber) {
-        this.confirmationNumber = confirmationNumber;
+    public void setConfirmationCode(String confirmationCode) {
+        this.confirmationCode = confirmationCode;
     }
 
     public static String getDatabaseType() {
@@ -86,7 +84,7 @@ public class AnonymousReport extends Report {
 
     public String getFormattedDateTime() { return formattedDateTime; }
 
-    public void setFormattedDateTime(String formattedDateTime) { this.formattedDateTime = formattedDateTime; }
+    public void setFormattedDateTime() { this.formattedDateTime = formattedDateTime; }
 
     public long getDateTimeFiled() { return dateTimeFiled; }
 
@@ -98,11 +96,11 @@ public class AnonymousReport extends Report {
         if (o == null || getClass() != o.getClass()) return false;
         AnonymousReport that = (AnonymousReport) o;
         return id == that.id &&
-                Objects.equals(confirmationNumber, that.confirmationNumber);
+                Objects.equals(confirmationCode, that.confirmationCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, confirmationNumber);
+        return Objects.hash(id, confirmationCode);
     }
 }

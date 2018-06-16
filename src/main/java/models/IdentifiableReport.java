@@ -1,15 +1,13 @@
 package models;
 
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Objects;
 
 public class IdentifiableReport extends Report {
     private int id;
     private long dateTimeFiled;
     private String formattedDateTime;
-    private String confirmationNumber;
+    private String confirmationCode;
     private String firstName;
     private String lastName;
     private String phone;
@@ -42,7 +40,7 @@ public class IdentifiableReport extends Report {
             String additionalNotes
     ) {
         this.dateTimeFiled = System.currentTimeMillis();
-        this.confirmationNumber = "";
+        this.confirmationCode = "";
         type = DATABASE_TYPE;
         this.firstName = firstName ;
         this.lastName = lastName ;
@@ -76,12 +74,12 @@ public class IdentifiableReport extends Report {
         this.id = id;
     }
 
-    public String getConfirmationNumber() {
-        return confirmationNumber;
+    public String getConfirmationCode() {
+        return confirmationCode;
     }
 
-    public void setConfirmationNumber(String confirmationNumber) {
-        this.confirmationNumber = confirmationNumber;
+    public void setConfirmationCode(String confirmationCode) {
+        this.confirmationCode = confirmationCode;
     }
 
     public String getFirstName() {
@@ -126,7 +124,7 @@ public class IdentifiableReport extends Report {
 
     public String getFormattedDateTime() { return formattedDateTime; }
 
-    public void setFormattedDateTime(String formattedDateTime) { this.formattedDateTime = formattedDateTime; }
+    public void setFormattedDateTime() { this.formattedDateTime = formattedDateTime; }
 
     public long getDateTimeFiled() { return dateTimeFiled; }
 
@@ -138,13 +136,13 @@ public class IdentifiableReport extends Report {
         if (o == null || getClass() != o.getClass()) return false;
         IdentifiableReport that = (IdentifiableReport) o;
         return id == that.id &&
-                Objects.equals(confirmationNumber, that.confirmationNumber) &&
+                Objects.equals(confirmationCode, that.confirmationCode) &&
                 Objects.equals(firstName, that.firstName) &&
                 Objects.equals(lastName, that.lastName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, confirmationNumber, firstName, lastName);
+        return Objects.hash(id, confirmationCode, firstName, lastName);
     }
 }
