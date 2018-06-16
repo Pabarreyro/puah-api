@@ -1,5 +1,6 @@
 package dao;
 
+import models.Community;
 import models.Report;
 
 import java.util.List;
@@ -7,19 +8,21 @@ import java.util.List;
 public interface ReportDao {
 
     // CREATE
-    public void add(Report report);
+    void add(Report report);
+    void addCommunityToReport(Report report, Community community);
 
     // READ
-    public List<Report> getAll();
-    public Report findById(int reportId);
-    public Report findByConfirmationNumber (String confirmationNumber);
+    List<Report> getAll();
+    List<Community> getAllCommunities(int reportId);
+    Report findById(int reportId);
+    Report findByConfirmationCode (String confirmationCode);
 
     // UPDATE
-    public void update(Report report);
+    void update(Report report);
 
     // DELETE
-    public void deleteById(int reportId);
-    public void deleteByConfirmationNumber(String confirmationNumber);
-    public void clearAll();
+    void deleteById(int reportId);
+    void deleteByConfirmationCode(String confirmationCode);
+    void clearAll();
 
 }
