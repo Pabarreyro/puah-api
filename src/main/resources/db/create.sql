@@ -28,6 +28,35 @@ CREATE TABLE regions (
     name VARCHAR
 );
 
+CREATE TABLE reports (
+    id SERIAL PRIMARY KEY,
+    confirmationNumber VARCHAR,
+    dateTimeFiled INTEGER,
+    type VARCHAR,
+    firstName VARCHAR,
+    lastName VARCHAR,
+    phone VARCHAR,
+    email VARCHAR,
+    reporterRole VARCHAR,
+    reporterAge INTEGER,
+    reporterLocation VARCHAR,
+    incidentDate VARCHAR,
+    incidentTime VARCHAR,
+    incidentCrossStreets VARCHAR,
+    incidentSetting VARCHAR,
+    incidentType VARCHAR,
+    incidentTypeNotes VARCHAR,
+    incidentMotivation VARCHAR,
+    incidentMotivationNotes VARCHAR,
+    injuryOccurred BOOLEAN NOT NULL,
+    injuryNotes VARCHAR,
+    damagesOccurred BOOLEAN NOT NULL,
+    damagesNotes VARCHAR,
+    officiallyReported BOOLEAN NOT NULL,
+    officialReportNotes VARCHAR,
+    additionalNotes VARCHAR,
+)
+
 CREATE TABLE organizations_communities (
     id SERIAL PRIMARY KEY,
     organizationId INTEGER,
