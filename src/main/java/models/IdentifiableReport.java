@@ -20,12 +20,11 @@ public class IdentifiableReport extends Report {
             String lastName,
             String phone,
             String email,
-            String type,
             String reporterRole,
             int reporterAge,
             String reporterLocation,
-            Date incidentDate,
-            Time incidentTime,
+            String incidentDate,
+            String incidentTime,
             String incidentCrossStreets,
             String incidentSetting,
             String incidentType,
@@ -41,6 +40,7 @@ public class IdentifiableReport extends Report {
             String additionalNotes
     ) {
         this.confirmationNumber = "";
+        this.dateTimeFiled = System.currentTimeMillis()String
         type = DATABASE_TYPE;
         this.firstName = firstName ;
         this.lastName = lastName ;

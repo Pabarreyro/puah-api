@@ -1,18 +1,13 @@
 package models;
 
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Date;
-
 public abstract class Report {
-    public Date dateFiled;
-    public Time timeFiled;
+    public long dateTimeFiled;
     public String type;
     public String reporterRole;
     public int reporterAge;
     public String reporterLocation;
-    public Date incidentDate;
-    public Time incidentTime;
+    public String incidentDate;
+    public String incidentTime;
     public String incidentCrossStreets;
     public String incidentSetting;
     public String incidentType;

@@ -16,8 +16,8 @@ public class AnonymousReport extends Report {
             String reporterRole,
             int reporterAge,
             String reporterLocation,
-            Date incidentDate,
-            Time incidentTime,
+            String incidentDate,
+            String incidentTime,
             String incidentCrossStreets,
             String incidentSetting,
             String incidentType,
@@ -33,8 +33,8 @@ public class AnonymousReport extends Report {
             String additionalNotes
     ) {
         this.confirmationNumber = "";
+        this.dateTimeFiled = System.currentTimeMillis();
         type = DATABASE_TYPE;
-        this.type = type ;
         this.reporterRole = reporterRole ;
         this.reporterAge = reporterAge ;
         this.reporterLocation = reporterLocation ;
