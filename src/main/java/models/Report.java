@@ -1,7 +1,6 @@
 package models;
 
 public abstract class Report {
-    public long dateTimeFiled;
     public String type;
     public String reporterRole;
     public int reporterAge;
