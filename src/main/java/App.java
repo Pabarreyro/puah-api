@@ -55,7 +55,7 @@ public class App {
             Organization newOrganization = new Organization(name, address, zip, phone, website, email);
             organizationDao.add(newOrganization);
 
-            // Parse services
+            // Parse services and add join table row(s)
             for (LinkedTreeMap<String, String> service : requestBody.get("services")) {
                 int serviceId = Integer.parseInt(service.get("id"));
                 Service associatedService = serviceDao.findById(serviceId);
@@ -63,7 +63,7 @@ public class App {
                 System.out.println(serviceDao.getAllOrganizations(serviceId).size());
             }
 
-            // Parse communities
+            // Parse communities and add join table row(s)
             for (LinkedTreeMap<String, String> community : requestBody.get("communities")) {
                 int communityId = Integer.parseInt(community.get("id"));
                 Community associatedCommunity = communityDao.findById(communityId);
@@ -71,7 +71,7 @@ public class App {
                 System.out.println(communityDao.getAllOrganizations(communityId).size());
             }
 
-            // Parse regions
+            // Parse regions and add join table row(s)
             for (LinkedTreeMap<String, String> region : requestBody.get("regions")) {
                 int regionId = Integer.parseInt(region.get("id"));
                 Region associatedRegion = regionDao.findById(regionId);
