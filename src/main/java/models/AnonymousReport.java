@@ -7,12 +7,13 @@ import java.util.Objects;
 
 public class AnonymousReport extends Report {
     private int id;
+    private long dateTimeFiled;
+    private String formattedDateTime;
     private String confirmationNumber;
     private ArrayList<String> selfIdentifiers;
     private static final String DATABASE_TYPE = "Anonymous";
 
     public AnonymousReport(
-            String type,
             String reporterRole,
             int reporterAge,
             String reporterLocation,
@@ -32,8 +33,8 @@ public class AnonymousReport extends Report {
             String officialReportNotes,
             String additionalNotes
     ) {
-        this.confirmationNumber = "";
         this.dateTimeFiled = System.currentTimeMillis();
+        this.confirmationNumber = "";
         type = DATABASE_TYPE;
         this.reporterRole = reporterRole ;
         this.reporterAge = reporterAge ;
@@ -82,6 +83,14 @@ public class AnonymousReport extends Report {
     public void setSelfIdentifiers(ArrayList<String> selfIdentifiers) {
         this.selfIdentifiers = selfIdentifiers;
     }
+
+    public String getFormattedDateTime() { return formattedDateTime; }
+
+    public void setFormattedDateTime(String formattedDateTime) { this.formattedDateTime = formattedDateTime; }
+
+    public long getDateTimeFiled() { return dateTimeFiled; }
+
+    public void setDateTimeFiled(long dateTimeFiled) { this.dateTimeFiled = dateTimeFiled; }
 
     @Override
     public boolean equals(Object o) {

@@ -7,6 +7,8 @@ import java.util.Objects;
 
 public class IdentifiableReport extends Report {
     private int id;
+    private long dateTimeFiled;
+    private String formattedDateTime;
     private String confirmationNumber;
     private String firstName;
     private String lastName;
@@ -39,14 +41,13 @@ public class IdentifiableReport extends Report {
             String officialReportNotes,
             String additionalNotes
     ) {
+        this.dateTimeFiled = System.currentTimeMillis();
         this.confirmationNumber = "";
-        this.dateTimeFiled = System.currentTimeMillis()String
         type = DATABASE_TYPE;
         this.firstName = firstName ;
         this.lastName = lastName ;
         this.phone = phone ;
         this.email = email ;
-        this.type = type ;
         this.reporterRole = reporterRole ;
         this.reporterAge = reporterAge ;
         this.reporterLocation = reporterLocation ;
@@ -122,6 +123,14 @@ public class IdentifiableReport extends Report {
     public void setSelfIdentifiers(ArrayList<String> selfIdentifiers) {
         this.selfIdentifiers = selfIdentifiers;
     }
+
+    public String getFormattedDateTime() { return formattedDateTime; }
+
+    public void setFormattedDateTime(String formattedDateTime) { this.formattedDateTime = formattedDateTime; }
+
+    public long getDateTimeFiled() { return dateTimeFiled; }
+
+    public void setDateTimeFiled(long dateTimeFiled) { this.dateTimeFiled = dateTimeFiled; }
 
     @Override
     public boolean equals(Object o) {
