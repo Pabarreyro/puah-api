@@ -40,10 +40,12 @@ public class App {
 
         // CREATE
         post("/organizations/new", "application/json", (req, res) -> {
-            HashMap<String, ArrayList<LinkedTreeMap<String, String>>> requestBody = gson.fromJson(req.body(), HashMap.class);
-            LinkedTreeMap<String, String> sentOrganization = requestBody.get("organization").get(0);
 
-            // Parse Organization Out
+            // Cast request object to HashMap
+            HashMap<String, ArrayList<LinkedTreeMap<String, String>>> requestBody = gson.fromJson(req.body(), HashMap.class);
+
+            // Parse organization
+            LinkedTreeMap<String, String> sentOrganization = requestBody.get("organization").get(0);
             String name = sentOrganization.get("name");
             String address = sentOrganization.get("address");
             String zip = sentOrganization.get("zip");
@@ -53,7 +55,7 @@ public class App {
             Organization newOrganization = new Organization(name, address, zip, phone, website, email);
             organizationDao.add(newOrganization);
 
-            // Parse Services out
+            // Parse services
             for (LinkedTreeMap<String, String> service : requestBody.get("services")) {
                 int serviceId = Integer.parseInt(service.get("id"));
                 Service associatedService = serviceDao.findById(serviceId);
@@ -61,7 +63,7 @@ public class App {
                 System.out.println(serviceDao.getAllOrganizations(serviceId).size());
             }
 
-            // Parse Communities out
+            // Parse communities
             for (LinkedTreeMap<String, String> community : requestBody.get("communities")) {
                 int communityId = Integer.parseInt(community.get("id"));
                 Community associatedCommunity = communityDao.findById(communityId);
@@ -69,7 +71,7 @@ public class App {
                 System.out.println(communityDao.getAllOrganizations(communityId).size());
             }
 
-            // Parse Regions out
+            // Parse regions
             for (LinkedTreeMap<String, String> region : requestBody.get("regions")) {
                 int regionId = Integer.parseInt(region.get("id"));
                 Region associatedRegion = regionDao.findById(regionId);
@@ -104,13 +106,16 @@ public class App {
 
         // READ
         get("/organizations", "application/json", (req, res) -> {
+            // Retrieve all orgs and instantiate ArrayList for holding filtered orgs
             List<Organization> allOrgs = organizationDao.getAll();
             ArrayList<Organization> filteredOrgs = new ArrayList<>();
 
+            // Instantiate Arrays for holding any query params
             String[] serviceIds = {};
             String[] communityIds = {};
             String[] regionIds = {};
 
+            // Grab query params
             if (req.queryParams("service") != null) {
                 serviceIds = req.queryParamsValues("service");
             }
@@ -121,6 +126,7 @@ public class App {
                 regionIds = req.queryParamsValues("region");
             }
 
+            // Add organizations that match ANY query to filtered orgs ArrayList
             if (serviceIds.length > 0 ) {
                 for (String serviceId : serviceIds) {
                     int queryId = Integer.parseInt(serviceId);
@@ -154,6 +160,8 @@ public class App {
                     }
                 }
             }
+
+            // Add associated services, communities and regions and return either all orgs or filtered orgs
             if (filteredOrgs.size() > 0) {
                 for (Organization org : filteredOrgs){
                     int orgId = org.getId();
