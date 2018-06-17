@@ -103,5 +103,4 @@ CREATE TABLE reports_contacts (
     reportId INTEGER
 );
 
-
 CREATE DATABASE puah_test WITH TEMPLATE puah;
