@@ -1,9 +1,6 @@
 package dao;
 
-import models.AnonymousReport;
-import models.Community;
-import models.IdentifiableReport;
-import models.Report;
+import models.*;
 import org.junit.*;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
@@ -17,6 +14,7 @@ public class Sql2oReportDaoTest {
     private static Connection conn;
     private static Sql2oReportDao reportDao;
     private static Sql2oCommunityDao communityDao;
+    private static Sql2oOrganizationDao organizationDao;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -24,6 +22,7 @@ public class Sql2oReportDaoTest {
         Sql2o sql2o = new Sql2o(connectionString, null, null);
         reportDao = new Sql2oReportDao(sql2o);
         communityDao = new Sql2oCommunityDao(sql2o);
+        organizationDao = new Sql2oOrganizationDao(sql2o);
         conn = sql2o.open();
     }
 
@@ -40,7 +39,7 @@ public class Sql2oReportDaoTest {
     }
 
     @Test
-    public void add_setsId() throws ExecutionException {
+    public void add_setsId() throws Exception {
         Report testReport = newReport();
         Report testAltReport = newAltReport();
         assertNotEquals(null, testReport);
@@ -73,18 +72,22 @@ public class Sql2oReportDaoTest {
     }
 
     @Test
-    public void findById() throws Exception {
+    public void findById_returnsCorrectReport() throws Exception {
         Report testReport = newReport();
         Report testAltReport = newAltReport();
-        assertEquals(testReport, reportDao.findById(testReport.getId()));
+        assertEquals(testReport.getId(), reportDao.findById(testReport.getId()).getId());
+        assertEquals(testReport.getReporterAge(), reportDao.findById(testReport.getId()).getReporterAge());
+        assertEquals(testReport.getIncidentDate(), reportDao.findById(testReport.getId()).getIncidentDate());
     }
 
     @Test
-    public void findByConfirmationNumber() throws Exception {
+    public void findByConfirmationCode_returnsCorrectReport() throws Exception {
         Report testReport = newReport();
         Report testAltReport = newAltReport();
         String confirmationCode = testReport.getConfirmationCode();
-        assertEquals(testReport, reportDao.findByConfirmationCode(confirmationCode));
+        assertEquals(testReport.getId(), reportDao.findByConfirmationCode(testReport.getConfirmationCode()).getId());
+        assertEquals(testReport.getReporterAge(), reportDao.findByConfirmationCode(testReport.getConfirmationCode()).getReporterAge());
+        assertEquals(testReport.getIncidentDate(), reportDao.findByConfirmationCode(testReport.getConfirmationCode()).getIncidentDate());
     }
 
     @Test
@@ -124,6 +127,7 @@ public class Sql2oReportDaoTest {
     public void deleteById_deletesCorrectReport() {
         Report testReport = newReport();
         Report testAltReport = newAltReport();
+
         reportDao.deleteById(testAltReport.getId());
         assertEquals(1, reportDao.getAll().size());
     }
@@ -135,9 +139,12 @@ public class Sql2oReportDaoTest {
 
         Community testCommunity = newCommunity();
         reportDao.addCommunityToReport(testReport.getId(), testCommunity.getId());
+        Organization testOrganization = newOrganization();
+        reportDao.addOrganizationToReport(testReport.getId(), testOrganization.getId());
 
         reportDao.deleteById(reportId);
-        assertEquals(0, communityDao.getAll().size());
+        assertEquals(0, reportDao.getAllCommunities(reportId).size());
+        assertEquals(0, reportDao.getAllOrganizations(reportId).size());
     }
 
 //    @Test
@@ -227,10 +234,26 @@ public class Sql2oReportDaoTest {
     }
 
     public Community newCommunity() {
-        return new Community("non-binary", "gender");
+        Community newCommunity = new Community("non-binary", "gender");
+        communityDao.add(newCommunity);
+        return newCommunity;
     }
 
     public Community newAltCommunity() {
-        return new Community("Latino/a/x", "race/ethnicity");
+        Community newCommunity = new Community("Latino/a/x", "race/ethnicity");
+        communityDao.add(newCommunity);
+        return newCommunity;
+    }
+
+    public Organization newOrganization() {
+        Organization newOrganization = new Organization("CCC", "201 NW 2nd Ave", "97201", "503-260-5690", "www.ccc.org", "info@ccc.org");
+        organizationDao.add(newOrganization);
+        return newOrganization;
+    }
+
+    public Organization newAltOrganization() {
+        Organization newOrganization = new Organization("Coalition of Communities of Color", "211 NW 3rd Ave", "97202", "517-286-5722");
+        organizationDao.add(newOrganization);
+        return newOrganization;
     }
 }
