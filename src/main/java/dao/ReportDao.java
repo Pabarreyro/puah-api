@@ -7,8 +7,7 @@ import java.util.List;
 public interface ReportDao {
 
     // CREATE
-    void addAnonReport(AnonymousReport report);
-    void addNonAnonReport(IdentifiableReport report);
+    void add(Report report);
     void addCommunityToReport(int reportId, int communityId);
     void addOrganizationToReport(int reportId, int organizationId);
 
