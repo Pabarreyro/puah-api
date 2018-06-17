@@ -111,8 +111,11 @@ public class Sql2oRegionDao implements RegionDao{
     @Override
     public void clearAll() {
         String sql = "TRUNCATE regions";
+        String clearOrganizationJoins = "TRUNCATE organizations_regions";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
+                    .executeUpdate();
+            con.createQuery(clearOrganizationJoins)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);

@@ -165,6 +165,10 @@ public class Sql2oReportDao implements ReportDao {
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .executeUpdate();
+            con.createQuery(clearCommunityJoins)
+                    .executeUpdate();
+            con.createQuery(clearOrganizationJoins)
+                    .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);
         }

@@ -189,8 +189,23 @@ public class Sql2oOrganizationDao implements OrganizationDao {
     @Override
     public void clearAll() {
         String sql = "TRUNCATE organizations";
+        String clearServiceJoins = "TRUNCATE organizations_services";
+        String clearRegionJoins = "TRUNCATE organizations_regions";
+        String clearCommunityJoins = "TRUNCATE organizations_communities";
+        String clearContactJoins = "TRUNCATE organizations_contacts";
+        String clearReportJoins = "TRUNCATE organizations_reports";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
+                    .executeUpdate();
+            con.createQuery(clearServiceJoins)
+                    .executeUpdate();
+            con.createQuery(clearRegionJoins)
+                    .executeUpdate();
+            con.createQuery(clearCommunityJoins)
+                    .executeUpdate();
+            con.createQuery(clearContactJoins)
+                    .executeUpdate();
+            con.createQuery(clearReportJoins)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);

@@ -111,8 +111,11 @@ public class Sql2oCommunityDao implements CommunityDao {
     @Override
     public void clearAll() {
         String sql = "TRUNCATE communities";
+        String clearOrganizationJoins = "TRUNCATE organizations_communities";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
+                    .executeUpdate();
+            con.createQuery(clearOrganizationJoins)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);

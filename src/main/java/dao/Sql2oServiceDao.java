@@ -111,8 +111,11 @@ public class Sql2oServiceDao implements ServiceDao{
     @Override
     public void clearAll() {
         String sql = "TRUNCATE services";
+        String clearOrganizationJoins = "TRUNCATE organizations_services";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
+                    .executeUpdate();
+            con.createQuery(clearOrganizationJoins)
                     .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);
