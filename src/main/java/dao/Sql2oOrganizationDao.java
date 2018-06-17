@@ -1,9 +1,6 @@
 package dao;
 
-import models.Community;
-import models.Organization;
-import models.Region;
-import models.Service;
+import models.*;
 import org.sql2o.*;
 
 import java.util.ArrayList;
@@ -139,6 +136,50 @@ public class Sql2oOrganizationDao implements OrganizationDao {
         }
         return returnedRegions;
     }
+
+    @Override
+    public List<Report> getAllReports(int organizationId) {
+        ArrayList<Report> returnedReports = new ArrayList<>();
+
+        String joinQuery = "SELECT reportId FROM organizations_reports WHERE organizationId = :organizationId";
+        try (Connection con = sql2o.open()) {
+            List<Integer> reportIds = con.createQuery(joinQuery)
+                    .addParameter("organizationId", organizationId)
+                    .executeAndFetch(Integer.class);
+            for (Integer reportId : reportIds) {
+                String reportQuery = "SELECT * FROM reports WHERE id = :reportId";
+                returnedReports.add(
+                        con.createQuery(reportQuery)
+                                .addParameter("reportId", reportId)
+                                .executeAndFetchFirst(Report.class)
+                );
+            }
+        }
+        return returnedReports;
+    }
+
+    @Override
+    public List<Contact> getAllContacts(int organizationId) {
+        ArrayList<Contact> returnedContacts = new ArrayList<>();
+
+        String joinQuery = "SELECT contactId FROM organizations_contacts WHERE organizationId = :organizationId";
+        try (Connection con = sql2o.open()) {
+            List<Integer> contactIds = con.createQuery(joinQuery)
+                    .addParameter("organizationId", organizationId)
+                    .executeAndFetch(Integer.class);
+            for (Integer contactId : contactIds) {
+                String contactQuery = "SELECT * FROM contacts WHERE id = :contactId";
+                returnedContacts.add(
+                        con.createQuery(contactQuery)
+                                .addParameter("contactId", contactId)
+                                .executeAndFetchFirst(Contact.class)
+                );
+            }
+        }
+        return returnedContacts;
+    }
+
+
 
     @Override
     public Organization findById(int id) {
