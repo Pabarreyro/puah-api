@@ -30,13 +30,9 @@ CREATE TABLE regions (
 
 CREATE TABLE reports (
     id SERIAL PRIMARY KEY,
-    confirmationNumber VARCHAR,
+    confirmationCode VARCHAR,
     dateTimeFiled INTEGER,
     type VARCHAR,
-    firstName VARCHAR,
-    lastName VARCHAR,
-    phone VARCHAR,
-    email VARCHAR,
     reporterRole VARCHAR,
     reporterAge INTEGER,
     reporterLocation VARCHAR,
@@ -54,8 +50,8 @@ CREATE TABLE reports (
     damagesNotes VARCHAR,
     officiallyReported BOOLEAN NOT NULL,
     officialReportNotes VARCHAR,
-    additionalNotes VARCHAR,
-)
+    additionalNotes VARCHAR
+);
 
 CREATE TABLE organizations_communities (
     id SERIAL PRIMARY KEY,
@@ -74,5 +70,18 @@ CREATE TABLE organizations_regions (
     organizationId INTEGER,
     regionId INTEGER
 );
+
+CREATE TABLE reports_communities (
+    id SERIAL PRIMARY KEY,
+    reportId INTEGER,
+    communityId INTEGER
+);
+
+CREATE TABLE reports_organizations (
+    id SERIAL PRIMARY KEY,
+    reportId INTEGER,
+    organizationId INTEGER
+);
+
 
 CREATE DATABASE puah_test WITH TEMPLATE puah;
