@@ -6,7 +6,6 @@ import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.*;
 
@@ -15,6 +14,7 @@ public class Sql2oReportDaoTest {
     private static Sql2oReportDao reportDao;
     private static Sql2oCommunityDao communityDao;
     private static Sql2oOrganizationDao organizationDao;
+    private static Sql2oContactDao contactDao;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -23,6 +23,7 @@ public class Sql2oReportDaoTest {
         reportDao = new Sql2oReportDao(sql2o);
         communityDao = new Sql2oCommunityDao(sql2o);
         organizationDao = new Sql2oOrganizationDao(sql2o);
+        contactDao = new Sql2oContactDao(sql2o);
         conn = sql2o.open();
     }
 
@@ -42,8 +43,8 @@ public class Sql2oReportDaoTest {
     public void add_setsId() throws Exception {
         Report testReport = newReport();
         Report testAltReport = newAltReport();
-        assertNotEquals(null, testReport);
-        assertNotEquals(null, testAltReport);
+        assertNotEquals(null, testReport.getId());
+        assertNotEquals(null, testAltReport.getId());
     }
 
     @Test
@@ -88,6 +89,20 @@ public class Sql2oReportDaoTest {
         assertEquals(testReport.getId(), reportDao.findByConfirmationCode(testReport.getConfirmationCode()).getId());
         assertEquals(testReport.getReporterAge(), reportDao.findByConfirmationCode(testReport.getConfirmationCode()).getReporterAge());
         assertEquals(testReport.getIncidentDate(), reportDao.findByConfirmationCode(testReport.getConfirmationCode()).getIncidentDate());
+    }
+
+    @Test
+    public void findByContact_returnsCorrectReport() throws Exception {
+        Report testReport = newReport();
+
+        Contact testContact = newContact();
+        int contactId = testContact.getId();
+
+        reportDao.addContactToReport(testReport.getId(), contactId);
+
+        assertEquals(testReport.getId(), reportDao.findByContact(contactId));
+        assertEquals(testReport.getReporterAge(), reportDao.findByContact(contactId));
+        assertEquals(testReport.getIncidentDate(), reportDao.findByContact(contactId));
     }
 
     @Test
@@ -255,5 +270,11 @@ public class Sql2oReportDaoTest {
         Organization newOrganization = new Organization("Coalition of Communities of Color", "211 NW 3rd Ave", "97202", "517-286-5722");
         organizationDao.add(newOrganization);
         return newOrganization;
+    }
+
+    public Contact newContact() {
+        Contact newContact = new Contact("Jose", "Chavez", "jose@netscape.com", "503-323-1425");
+        contactDao.add(newContact);
+        return newContact;
     }
 }
