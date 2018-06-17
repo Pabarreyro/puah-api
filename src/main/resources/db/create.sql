@@ -85,16 +85,16 @@ CREATE TABLE organizations_contacts (
     organizationId INTEGER
 );
 
+CREATE TABLE organizations_reports (
+    id SERIAL PRIMARY KEY,
+    reportId INTEGER,
+    organizationId INTEGER
+);
+
 CREATE TABLE reports_communities (
     id SERIAL PRIMARY KEY,
     reportId INTEGER,
     communityId INTEGER
-);
-
-CREATE TABLE reports_organizations (
-    id SERIAL PRIMARY KEY,
-    reportId INTEGER,
-    organizationId INTEGER
 );
 
 CREATE TABLE reports_contacts (
