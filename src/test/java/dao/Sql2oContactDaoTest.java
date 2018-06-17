@@ -64,7 +64,7 @@ public class Sql2oContactDaoTest {
     public void findById_returnsCorrectContact() {
         Contact testContact = newContact();
         Contact testAltContact = newAltContact();
-        assertEquals(testContact, organizationDao.findById(testContact.getId());
+        assertEquals(testContact, organizationDao.findById(testContact.getId()));
     }
 
     @Test
