@@ -53,6 +53,14 @@ CREATE TABLE reports (
     additionalNotes VARCHAR
 );
 
+CREATE TABLE contacts (
+    id SERIAL PRIMARY KEY,
+    firstName VARCHAR,
+    lastName VARCHAR,
+    phone VARCHAR,
+    email VARCHAR,
+);
+
 CREATE TABLE organizations_communities (
     id SERIAL PRIMARY KEY,
     organizationId INTEGER,
@@ -71,6 +79,12 @@ CREATE TABLE organizations_regions (
     regionId INTEGER
 );
 
+CREATE TABLE organizations_contacts (
+    id SERIAL PRIMARY KEY,
+    contactId INTEGER,
+    organizationId INTEGER
+);
+
 CREATE TABLE reports_communities (
     id SERIAL PRIMARY KEY,
     reportId INTEGER,
@@ -81,6 +95,12 @@ CREATE TABLE reports_organizations (
     id SERIAL PRIMARY KEY,
     reportId INTEGER,
     organizationId INTEGER
+);
+
+CREATE TABLE reports_contacts (
+    id SERIAL PRIMARY KEY,
+    contactId INTEGER,
+    reportId INTEGER
 );
 
 
