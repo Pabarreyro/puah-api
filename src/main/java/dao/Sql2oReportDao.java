@@ -14,28 +14,20 @@ public class Sql2oReportDao implements ReportDao {
     public Sql2oReportDao(Sql2o sql2o) { this.sql2o = sql2o; }
     
     @Override
-    public void addAnonReport(AnonymousReport report) {
-        String sql = "INSERT INTO reports (confirmationCode, reporterRole, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes, incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, additionalNotes) VALUES (:conrifmationCode, :reporterRole, :reporterLocation, :incidentDate, :incidentTime, :incidentCrossStreets, :incidentSetting, :incidentType, :incidentTypeNotes, :incidentMotivation, :incidentMotivationNotes, :injuryOccurred, :injuryNotes, :damagesOccurred, :damagesNotes, :officiallyReported, :officialReportNotes, :additionalNotes)" ;
+    public void add(Report report) {
+        String sql = "INSERT INTO reports (reporterRole, reporterAge, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes, incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, additionalNotes) VALUES (:reporterRole, :reporterAge, :reporterLocation, :incidentDate, :incidentTime, :incidentCrossStreets, :incidentSetting, :incidentType, :incidentTypeNotes, :incidentMotivation, :incidentMotivationNotes, :injuryOccurred, :injuryNotes, :damagesOccurred, :damagesNotes, :officiallyReported, :officialReportNotes, :additionalNotes)";
+        String confirmationCode = "UPDATE reports SET confirmationCode = :confirmationCode WHERE id = :id";
         try (Connection con= sql2o.open()) {
             int id = (int) con.createQuery(sql, true)
                     .bind(report)
                     .executeUpdate()
                     .getKey();
             report.setId(id);
-        } catch (Sql2oException ex) {
-            System.out.println(ex);
-        }
-    }
-
-    @Override
-    public void addNonAnonReport(IdentifiableReport report) {
-        String sql = "INSERT INTO reports (firstName, lastName, phone, email, reporterRole, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes, incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, additionalNotes) VALUES (firstName, lastName, phone, email, :reporterRole, :reporterLocation, :incidentDate, :incidentTime, :incidentCrossStreets, :incidentSetting, :incidentType, :incidentTypeNotes, :incidentMotivation, :incidentMotivationNotes, :injuryOccurred, :injuryNotes, :damagesOccurred, :damagesNotes, :officiallyReported, :officialReportNotes, :additionalNotes)" ;
-        try (Connection con= sql2o.open()) {
-            int id = (int) con.createQuery(sql, true)
-                    .bind(report)
-                    .executeUpdate()
-                    .getKey();
-            report.setId(id);
+            report.createConfirmationCode(id);
+            con.createQuery(confirmationCode)
+                    .addParameter("confirmationCode", report.getConfirmationCode())
+                    .addParameter("id", report.getId())
+                    .executeUpdate();
         } catch (Sql2oException ex) {
             System.out.println(ex);
         }
@@ -43,7 +35,7 @@ public class Sql2oReportDao implements ReportDao {
 
     @Override
     public void addOrganizationToReport(int reportId, int organizationId) {
-        String sql = "INSERT INTO reports_organizaions (reportId, organizationId) VALUES (:reportId, :organizationId)";
+        String sql = "INSERT INTO reports_organizations (reportId, organizationId) VALUES (:reportId, :organizationId)";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .addParameter("organizationId", organizationId)
@@ -140,7 +132,7 @@ public class Sql2oReportDao implements ReportDao {
 
     @Override
     public void update(Report report) {
-        String sql = "UPDATE reports SET (confirmationCode, reporterRole, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes, incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, additionalNotes) = (:conrifmationCode, :reporterRole, :reporterLocation, :incidentDate, :incidentTime, :incidentCrossStreets, :incidentSetting, :incidentType, :incidentTypeNotes, :incidentMotivation, :incidentMotivationNotes, :injuryOccurred, :injuryNotes, :damagesOccurred, :damagesNotes, :officiallyReported, :officialReportNotes, :additionalNotes) WHERE id =:id";
+        String sql = "UPDATE reports SET (confirmationCode, reporterRole, reporterAge, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes, incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, additionalNotes) = (:confirmationCode, :reporterRole, :reporterAge, :reporterLocation, :incidentDate, :incidentTime, :incidentCrossStreets, :incidentSetting, :incidentType, :incidentTypeNotes, :incidentMotivation, :incidentMotivationNotes, :injuryOccurred, :injuryNotes, :damagesOccurred, :damagesNotes, :officiallyReported, :officialReportNotes, :additionalNotes) WHERE id =:id";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .bind(report)
@@ -153,8 +145,8 @@ public class Sql2oReportDao implements ReportDao {
     @Override
     public void deleteById(int id) {
         String sql = "DELETE from reports WHERE id = :id";
-        String deleteCommunityJoin = "DELETE from reports_communities WHERE reportId = reportId";
-        String deleteOrganizationJoin = "DELETE from reports_organizations WHERE reportId = reportId";
+        String deleteCommunityJoin = "DELETE from reports_communities WHERE reportId = :reportId";
+        String deleteOrganizationJoin = "DELETE from reports_organizations WHERE reportId = :reportId";
 
         try (Connection con = sql2o.open()) {
             con.createQuery(sql).addParameter("id", id).executeUpdate();
@@ -168,6 +160,8 @@ public class Sql2oReportDao implements ReportDao {
     @Override
     public void clearAll() {
         String sql = "TRUNCATE reports";
+        String clearCommunityJoins = "TRUNCATE reports_communities";
+        String clearOrganizationJoins = "TRUNCATE reports_organizations";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .executeUpdate();
