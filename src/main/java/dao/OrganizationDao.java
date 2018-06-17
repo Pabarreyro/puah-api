@@ -1,9 +1,6 @@
 package dao;
 
-import models.Community;
-import models.Organization;
-import models.Region;
-import models.Service;
+import models.*;
 
 import java.util.List;
 
@@ -21,6 +18,8 @@ public interface OrganizationDao {
     List<Service> getAllServices(int id);
     List<Community> getAllCommunities(int id);
     List<Region> getAllRegions(int id);
+    List<Report> getAllReports(int id);
+    List<Contact> getAllContacts(int id);
 
     // UPDATE
     void update(Organization organization);
