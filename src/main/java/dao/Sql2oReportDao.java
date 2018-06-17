@@ -60,6 +60,19 @@ public class Sql2oReportDao implements ReportDao {
     }
 
     @Override
+    public void addContactToReport(int reportId, int contactId) {
+        String sql = "INSERT INTO reports_contacts (reportId, contactId) VALUES (:reportId, :contactId)";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(sql)
+                    .addParameter("contactId", contactId)
+                    .addParameter("reportId", reportId)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    @Override
     public List<Report> getAll() {
         String sql = "SELECT * FROM reports";
         try (Connection con = sql2o.open()) {
@@ -126,6 +139,20 @@ public class Sql2oReportDao implements ReportDao {
         try (Connection con = sql2o.open()) {
             return con.createQuery(sql)
                     .addParameter("confirmationCode", confirmationCode)
+                    .executeAndFetchFirst(Report.class);
+        }
+    }
+
+    @Override
+    public Report findByContact(int contactId) {
+        String joinTableLookup = "SELECT reportId FROM reports_contact WHERE contactId = :contactId";
+        String sql = "SELECT * FROM reports WHERE id = :id";
+        try (Connection con = sql2o.open()) {
+            int reportId = (int) con.createQuery(joinTableLookup)
+                    .addParameter("contactId", contactId)
+                    .executeAndFetchFirst(Integer.class);
+            return con.createQuery(sql)
+                    .addParameter("id", reportId)
                     .executeAndFetchFirst(Report.class);
         }
     }
