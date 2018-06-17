@@ -1,6 +1,8 @@
 package models;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,7 +58,6 @@ public class Report {
         this.additionalNotes = additionalNotes;
 
         this.dateTimeFiled = System.currentTimeMillis();
-        this.confirmationCode = "";
     }
 
     public String getType() {
@@ -223,8 +224,11 @@ public class Report {
         return formattedDateTime;
     }
 
-    public void setFormattedDateTime(String formattedDateTime) {
-        this.formattedDateTime = formattedDateTime;
+    public void setFormattedDateTime() {
+        Date date = new Date(this.dateTimeFiled);
+        String datePatternToUse = "MM-dd-yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(datePatternToUse);
+        this.formattedDateTime = sdf.format(date);
     }
 
     public String getConfirmationCode() {
@@ -233,6 +237,11 @@ public class Report {
 
     public void setConfirmationCode(String confirmationCode) {
         this.confirmationCode = confirmationCode;
+    }
+
+    public void createConfirmationCode(int id) {
+        String newId = Integer.toString(id);
+        this.confirmationCode = String.format("%s-%s-%s", this.formattedDateTime, this.type, newId);
     }
 
     public int getId() {
