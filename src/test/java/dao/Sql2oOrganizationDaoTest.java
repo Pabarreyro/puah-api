@@ -1,13 +1,9 @@
 package dao;
 
-import models.Community;
-import models.Organization;
-import models.Region;
-import models.Service;
+import models.*;
 import org.junit.*;
 import org.sql2o.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
@@ -18,6 +14,8 @@ public class Sql2oOrganizationDaoTest {
     private static Sql2oServiceDao serviceDao;
     private static Sql2oCommunityDao communityDao;
     private static Sql2oRegionDao regionDao;
+    private static Sql2oReportDao reportDao;
+    private static Sql2oContactDao contactDao;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -27,6 +25,8 @@ public class Sql2oOrganizationDaoTest {
         serviceDao = new Sql2oServiceDao(sql2o);
         communityDao = new Sql2oCommunityDao(sql2o);
         regionDao = new Sql2oRegionDao(sql2o);
+        reportDao = new Sql2oReportDao(sql2o);
+        contactDao = new Sql2oContactDao(sql2o);
         conn = sql2o.open();
     }
 
@@ -100,6 +100,32 @@ public class Sql2oOrganizationDaoTest {
 
         Region[] regions = {testRegion, altTestRegion};
         assertEquals(Arrays.asList(regions), organizationDao.getAllRegions(testOrganization.getId()));
+    }
+
+    @Test
+    public void getAllReports_returnsAllAssociatedReports() {
+        Report testReport = newReport();
+        Report altTestReport = newAltReport();
+
+        Organization testOrganization = setUpOrganization();
+        reportDao.addOrganizationToReport(testReport.getId(), testOrganization.getId());
+        reportDao.addOrganizationToReport(altTestReport.getId(), testOrganization.getId());
+
+        Report[] reports = {testReport, altTestReport};
+        assertEquals(Arrays.asList(reports), organizationDao.getAllReports(testOrganization.getId()));
+    }
+
+    @Test
+    public void getAllContacts_returnsAllAssociatedReports() {
+        Contact testContact = newContact();
+        Contact altTestContact = newAltContact();
+
+        Organization testOrganization = setUpOrganization();
+        reportDao.addContactToReport(testContact.getId(), testOrganization.getId());
+        reportDao.addContactToReport(altTestContact.getId(), testOrganization.getId());
+
+        Contact[] contacts = {testContact, altTestContact};
+        assertEquals(Arrays.asList(contacts), organizationDao.getAllContacts(testOrganization.getId()));
     }
 
     @Test
@@ -206,5 +232,69 @@ public class Sql2oOrganizationDaoTest {
         Region newRegion = new Region ("Outer SE");
         regionDao.add(newRegion);
         return newRegion;
+    }
+
+    public Report newReport() {
+        Report newReport = new Report(
+                "Anonymous",
+                "Witness",
+                30,
+                "Inner SW",
+                "2018-07-02",
+                "18:00",
+                "SW Washington Ave & 5th Ave",
+                "School",
+                "Vandalism",
+                "",
+                "Race/ethnicity",
+                "",
+                false,
+                "",
+                true,
+                "",
+                true,
+                "",
+                ""
+        );
+        reportDao.add(newReport);
+        return newReport;
+    }
+
+    public Report newAltReport() {
+        Report newReport = new Report(
+                "NonAnonymous",
+                "Witness",
+                30,
+                "Inner SW",
+                "2018-07-02",
+                "18:00",
+                "SW Washington Ave & 5th Ave",
+                "School",
+                "Vandalism",
+                "",
+                "Race/ethnicity",
+                "",
+                false,
+                "",
+                true,
+                "",
+                true,
+                "",
+                ""
+        );
+        reportDao.add(newReport);
+        return newReport;
+    }
+
+    public Contact newContact() {
+        Contact newContact = new Contact("Jose", "Chavez", "jose@netscape.com", "503-323-1425");
+        contactDao.add(newContact);
+        return newContact;
+    }
+
+    public Contact newAltContact() {
+        Contact newContact = new Contact("Maria", "Moreno", "maria@netscape.com", "971-242-1425");
+        contactDao.add(newContact);
+        return newContact;
     }
 }
