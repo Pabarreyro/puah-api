@@ -11,6 +11,7 @@ public interface OrganizationDao {
     void addOrganizationToService(Organization organization, Service service);
     void addOrganizationToRegion(Organization organization, Region region );
     void addOrganizationToCommunity(Organization organization, Community community);
+    void addOrganizationToContact(int organizationId, int contactId);
 
     // READ
     List<Organization> getAll();
