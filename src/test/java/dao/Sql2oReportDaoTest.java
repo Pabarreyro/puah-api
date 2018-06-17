@@ -20,7 +20,7 @@ public class Sql2oReportDaoTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        String connectionString = "jdbc:postgres:localhost:4567/puah";
+        String connectionString = "jdbc:postgresql://localhost:5432/puah_test";
         Sql2o sql2o = new Sql2o(connectionString, null, null);
         reportDao = new Sql2oReportDao(sql2o);
         communityDao = new Sql2oCommunityDao(sql2o);
@@ -41,16 +41,16 @@ public class Sql2oReportDaoTest {
 
     @Test
     public void add_setsId() throws ExecutionException {
-        AnonymousReport testReport = newAnonymousReport();
-        IdentifiableReport testAltReport = newIdentifiableReport();
+        Report testReport = newReport();
+        Report testAltReport = newAltReport();
         assertNotEquals(null, testReport);
         assertNotEquals(null, testAltReport);
     }
 
     @Test
     public void getAll_returnsAllExistingReports() throws Exception{
-        AnonymousReport testReport = newAnonymousReport();
-        IdentifiableReport testAltReport = newIdentifiableReport();
+        Report testReport = newReport();
+        Report testAltReport = newAltReport();
         assertEquals(2, reportDao.getAll().size());
     }
 
@@ -64,7 +64,7 @@ public class Sql2oReportDaoTest {
         Community testCommunity = newCommunity();
         Community altTestCommunity = newAltCommunity();
 
-        AnonymousReport testReport = newAnonymousReport();
+        Report testReport = newReport();
         reportDao.addCommunityToReport(testReport.getId(), testCommunity.getId());
         reportDao.addCommunityToReport(testReport.getId(), altTestCommunity.getId());
 
@@ -74,23 +74,24 @@ public class Sql2oReportDaoTest {
 
     @Test
     public void findById() throws Exception {
-        AnonymousReport testReport = newAnonymousReport();
-        IdentifiableReport testAltReport = newIdentifiableReport();
+        Report testReport = newReport();
+        Report testAltReport = newAltReport();
         assertEquals(testReport, reportDao.findById(testReport.getId()));
     }
 
     @Test
     public void findByConfirmationNumber() throws Exception {
-        AnonymousReport testReport = newAnonymousReport();
-        IdentifiableReport testAltReport = newIdentifiableReport();
+        Report testReport = newReport();
+        Report testAltReport = newAltReport();
         String confirmationCode = testReport.getConfirmationCode();
         assertEquals(testReport, reportDao.findByConfirmationCode(confirmationCode));
     }
 
     @Test
     public void update_correctlyUpdatesReport() throws Exception {
-        AnonymousReport testReport = newAnonymousReport();
-        AnonymousReport testAltReport = new AnonymousReport(
+        Report testReport = newReport();
+        Report testAltReport = new Report(
+                "Anonymous",
                 "Target",
                 15,
                 "Outer NE",
@@ -113,23 +114,23 @@ public class Sql2oReportDaoTest {
         testAltReport.setId(testReport.getId());
         reportDao.update(testAltReport);
         Report updatedReport = reportDao.findById(testAltReport.getId());
-        assertEquals(testAltReport.reporterRole, updatedReport.reporterRole);
-        assertEquals(testAltReport.reporterAge, updatedReport.reporterAge);
-        assertEquals(testAltReport.reporterLocation, updatedReport.reporterLocation);
-        assertEquals(testAltReport.incidentDate, updatedReport.incidentDate);
+        assertEquals(testAltReport.getReporterRole(), updatedReport.getReporterRole());
+        assertEquals(testAltReport.getReporterAge(), updatedReport.getReporterAge());
+        assertEquals(testAltReport.getReporterLocation(), updatedReport.getReporterLocation());
+        assertEquals(testAltReport.getIncidentDate(), updatedReport.getIncidentDate());
     }
 
     @Test
     public void deleteById_deletesCorrectReport() {
-        AnonymousReport testReport = newAnonymousReport();
-        IdentifiableReport testAltReport = newIdentifiableReport();
+        Report testReport = newReport();
+        Report testAltReport = newAltReport();
         reportDao.deleteById(testAltReport.getId());
         assertEquals(1, reportDao.getAll().size());
     }
 
     @Test
     public void deleteById_deletesAllAssociations() {
-        AnonymousReport testReport = newAnonymousReport();
+        Report testReport = newReport();
         int reportId = testReport.getId();
 
         Community testCommunity = newCommunity();
@@ -141,15 +142,15 @@ public class Sql2oReportDaoTest {
 
 //    @Test
 //    public void deleteByConfirmationCode_deletesCorrectReport() {
-//        AnonymousReport testReport = newAnonymousReport();
-//        IdentifiableReport testAltReport = newIdentifiableReport();
+//        Report testReport = newReport();
+//        Report testAltReport = newAltReport();
 //        reportDao.deleteByConfirmationCode(testAltReport.getConfirmationCode());
 //        assertEquals(1, reportDao.getAll().size());
 //    }
 
 //    @Test
 //    public void deleteByConfirmationCode_deletesAllAssociations() {
-//        AnonymousReport testReport = newAnonymousReport();
+//        Report testReport = newReport();
 //        String reportConfirmationCode = testReport.getConfirmationCode();
 //
 //        Community testCommunity = newCommunity();
@@ -165,7 +166,7 @@ public class Sql2oReportDaoTest {
 
 //    @Test
 //    public void timeStampIsReturnedCorrectly() throws Exception {
-//        AnonymousReport testReport= newAnonymousReport();
+//        Report testReport= newReport();
 //
 //        long creationTime = testReport.getDateTimeFiled();
 //        long savedTime = reportDao.getAll().get(0).getDateTimeFiled();
@@ -173,8 +174,9 @@ public class Sql2oReportDaoTest {
 //    }
 
     // Helpers
-    public AnonymousReport newAnonymousReport() {
-        AnonymousReport newReport = new AnonymousReport(
+    public Report newReport() {
+        Report newReport = new Report(
+                "Anonymous",
                 "Witness",
                 30,
                 "Inner SW",
@@ -194,16 +196,13 @@ public class Sql2oReportDaoTest {
                 "",
                 ""
         );
-        reportDao.addAnonReport(newReport);
+        reportDao.add(newReport);
         return newReport;
     }
 
-    public IdentifiableReport newIdentifiableReport() {
-        IdentifiableReport newReport = new IdentifiableReport(
-                "Jose",
-                "Chavez",
-                "503-345-8564",
-                "jose@netscape.com",
+    public Report newAltReport() {
+        Report newReport = new Report(
+                "NonAnonymous",
                 "Witness",
                 30,
                 "Inner SW",
@@ -223,7 +222,7 @@ public class Sql2oReportDaoTest {
                 "",
                 ""
         );
-        reportDao.addNonAnonReport(newReport);
+        reportDao.add(newReport);
         return newReport;
     }
 
