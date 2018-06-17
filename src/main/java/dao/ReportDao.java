@@ -10,6 +10,7 @@ public interface ReportDao {
     void add(Report report);
     void addCommunityToReport(int reportId, int communityId);
     void addOrganizationToReport(int reportId, int organizationId);
+    void addContactToReport(int reportId, int contactId);
 
 
     // READ
@@ -17,7 +18,8 @@ public interface ReportDao {
     List<Community> getAllCommunities(int reportId);
     List<Organization> getAllOrganizations(int reportId);
     Report findById(int reportId);
-    Report findByConfirmationCode (String confirmationCode);
+    Report findByConfirmationCode(String confirmationCode);
+    Report findByContact(int contactId);
 
     // UPDATE
     void update(Report report);
