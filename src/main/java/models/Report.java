@@ -58,6 +58,7 @@ public class Report {
         this.additionalNotes = additionalNotes;
 
         this.dateTimeFiled = System.currentTimeMillis();
+        setFormattedDateTime();
     }
 
     public String getType() {
