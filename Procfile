@@ -1,1 +1,1 @@
-web: java -cp target/puah-api-jar-with-dependencies.jar App
+web: java $JAVA_OPTS -cp target/classes:target/dependency/* Main

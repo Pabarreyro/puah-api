@@ -6,7 +6,7 @@
 
     <groupId>com.puah.app</groupId>
     <artifactId>puah-api</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
 
     <dependencies>
         <!-- We need to list out ALL dependencies our project needs. If you have dependencies not listed here, but sure to add them -->
@@ -84,7 +84,7 @@
                     <!-- Change this to YOUR application name! -->
                     <appName>community-hate-tracker</appName>
                     <processTypes>
-                        <web>java -jar target/puah-api-1.0.jar</web>
+                        <web>java $JAVA_OPTS -cp target/classes:target/dependency/* Main</web>
                     </processTypes>
                 </configuration>
             </plugin>
