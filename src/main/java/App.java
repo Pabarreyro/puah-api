@@ -109,6 +109,8 @@ public class App {
             Report newReport = new Report(type, reporterRole, reporterAge, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes,  incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, additionalNotes);
             reportDao.add(newReport);
             int reportId = newReport.getId();
+            System.out.println(newReport.getDateTimeFiled());
+            System.out.println(newReport.getFormattedDateTime());
 
             // Parse contact and add join table row(s)
             LinkedTreeMap<String, String> sentContact = requestBody.get("contact").get(0);
@@ -121,21 +123,24 @@ public class App {
             contactDao.add(newContact);
             int contactId = newContact.getId();
             reportDao.addContactToReport(reportId, contactId);
+            System.out.println(contactDao.getAll().size());
 
             // Parse communities and add join table row(s)
             for (LinkedTreeMap<String, String> community : requestBody.get("communities")) {
                 int communityId = Integer.parseInt(community.get("id"));
                 reportDao.addCommunityToReport(reportId, communityId);
+                System.out.println(reportDao.getAllCommunities(reportId).size());
             }
 
             // Parse organizations and add join table row(s)
             for (LinkedTreeMap<String, String> organization : requestBody.get("organizations")) {
                 int organizationId = Integer.parseInt(organization.get("id"));
                 reportDao.addOrganizationToReport(reportId, organizationId);
+                System.out.println(reportDao.getAllOrganizations(reportId).size());
             }
 
             res.status(201);
-            return gson.toJson(newReport.getConfirmationCode());
+            return gson.toJson(String.format("{\"confirmationNumber\":\"%s\"}", newReport.getConfirmationCode()));
         });
 
         post("/services/new", "application/json", (req, res) -> {
@@ -268,6 +273,22 @@ public class App {
             }
         });
 
+        get("/reports", "application/json", (req, res) -> {
+            if (reportDao.getAll().size() > 0) {
+                return gson.toJson(reportDao.getAll());
+            } else {
+                return "{\"message\":\"I'm sorry, but no reports are currently listed in the database.\"}";
+            }
+        });
+
+        get("/contacts", "application/json", (req, res) -> {
+            if (contactDao.getAll().size() > 0) {
+                return gson.toJson(contactDao.getAll());
+            } else {
+                return "{\"message\":\"I'm sorry, but no contacts are currently listed in the database.\"}";
+            }
+        });
+
         get("/organizations/:id", "application/json", (req, res) -> {
             int organizationId = Integer.parseInt(req.params("id"));
 
@@ -320,6 +341,7 @@ public class App {
 
             return gson.toJson(regionDao.findById(regionId));
         });
+
 
         // UPDATE
         post("/organizations/:id/update", "application/json", (req, res) ->{
