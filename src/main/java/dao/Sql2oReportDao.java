@@ -124,6 +124,27 @@ public class Sql2oReportDao implements ReportDao {
     }
 
     @Override
+    public List<Contact> getAllContacts(int reportId) {
+        ArrayList<Contact> returnedContacts = new ArrayList<>();
+
+        String joinQuery = "SELECT contactId FROM reports_contacts WHERE reportId = :reportId";
+        try (Connection con = sql2o.open()) {
+            List<Integer> contactIds = con.createQuery(joinQuery)
+                    .addParameter("reportId", reportId)
+                    .executeAndFetch(Integer.class);
+            for (Integer contactId : contactIds) {
+                String contactQuery = "SELECT * FROM contacts WHERE id =:contactId";
+                returnedContacts.add(
+                        con.createQuery(contactQuery)
+                                .addParameter("contactId", contactId)
+                                .executeAndFetchFirst(Contact.class)
+                );
+            }
+        }
+        return returnedContacts;
+    }
+
+    @Override
     public Report findById(int reportId) {
         String sql = "SELECT * FROM reports WHERE id = :id";
         try (Connection con = sql2o.open()) {
