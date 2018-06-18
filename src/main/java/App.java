@@ -274,8 +274,15 @@ public class App {
         });
 
         get("/reports", "application/json", (req, res) -> {
-            if (reportDao.getAll().size() > 0) {
-                return gson.toJson(reportDao.getAll());
+            List<Report> allReports = reportDao.getAll();
+            if (allReports.size() > 0) {
+                for (Report report : allReports) {
+                    int reportId = report.getId();
+                    report.setIdentifies(reportDao.getAllCommunities(reportId));
+                    report.setOrganizations(reportDao.getAllOrganizations(reportId));
+                    report.setContacts(reportDao.getAllContacts(reportId));
+                }
+                return gson.toJson(allReports);
             } else {
                 return "{\"message\":\"I'm sorry, but no reports are currently listed in the database.\"}";
             }
