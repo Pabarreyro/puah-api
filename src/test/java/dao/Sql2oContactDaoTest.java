@@ -27,6 +27,7 @@ public class Sql2oContactDaoTest {
         organizationDao = new Sql2oOrganizationDao(sql2o);
         contactDao = new Sql2oContactDao(sql2o);
         conn = sql2o.open();
+        contactDao.clearAll();
     }
 
     @After

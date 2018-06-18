@@ -25,6 +25,7 @@ public class Sql2oReportDaoTest {
         organizationDao = new Sql2oOrganizationDao(sql2o);
         contactDao = new Sql2oContactDao(sql2o);
         conn = sql2o.open();
+        reportDao.clearAll();
     }
 
     @After
@@ -51,7 +52,7 @@ public class Sql2oReportDaoTest {
     public void getAll_returnsAllExistingReports() throws Exception{
         Report testReport = newReport();
         Report testAltReport = newAltReport();
-        assertEquals(4, reportDao.getAll().size());
+        assertEquals(2, reportDao.getAll().size());
     }
 
     @Test
@@ -184,6 +185,7 @@ public class Sql2oReportDaoTest {
 
     @Test
     public void clearAll_deletesAllExistingReports() {
+        reportDao.clearAll();
     }
 
 //    @Test
