@@ -370,6 +370,30 @@ public class App {
             return gson.toJson(regionDao.findById(regionId));
         });
 
+        get("/reports/:id", "application/json", (req, res) -> {
+            int reportId = Integer.parseInt(req.params("id"));
+
+            Report reportToFind = reportDao.findById(reportId);
+
+            if (reportToFind == null) {
+                throw new ApiException(404, String.format("No report with the id: \"%s\" exists", req.params("id")));
+            }
+
+            return gson.toJson(reportDao.findById(reportId));
+        });
+
+        get("/contacts/:id", "application/json", (req, res) -> {
+            int contactId = Integer.parseInt(req.params("id"));
+
+            Contact contactToFind = contactDao.findById(contactId);
+
+            if (contactToFind == null) {
+                throw new ApiException(404, String.format("No contact with the id: \"%s\" exists", req.params("id")));
+            }
+
+            return gson.toJson(contactDao.findById(contactId));
+        });
+
 
         // UPDATE
         post("/organizations/:id/update", "application/json", (req, res) ->{
