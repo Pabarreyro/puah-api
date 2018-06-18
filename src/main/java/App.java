@@ -470,6 +470,23 @@ public class App {
             return String.format("{\"message\": \" %s has been removed from your regions.\"}", regionName);
         });
 
+        post("/reports/:id/delete", "application/json", (req, res) -> {
+            int reportId = Integer.parseInt(req.params("id"));
+            String reportConfirmationCode = reportDao.findById(reportId).getConfirmationCode();
+            reportDao.deleteById(reportId);
+            res.status(200);
+            return String.format("{\"message\": \" %s has been removed from your reports.\"}", reportConfirmationCode);
+        });
+
+        post("/contacts/:id/delete", "application/json", (req, res) -> {
+            int contactId = Integer.parseInt(req.params("id"));
+            String firstName = contactDao.findById(contactId).getFirstName();
+            String lastName = contactDao.findById(contactId).getLastName();
+            contactDao.deleteById(contactId);
+            res.status(200);
+            return String.format("{\"message\": \" %s %s has been removed from your contacts.\"}", firstName, lastName);
+        });
+
         // FILTER
         after((req, res) ->{
             res.type("application/json");
