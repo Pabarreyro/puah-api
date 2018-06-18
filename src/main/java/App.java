@@ -1,14 +1,8 @@
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import dao.Sql2oCommunityDao;
-import dao.Sql2oOrganizationDao;
-import dao.Sql2oRegionDao;
-import dao.Sql2oServiceDao;
+import dao.*;
 import exceptions.ApiException;
-import models.Community;
-import models.Organization;
-import models.Region;
-import models.Service;
+import models.*;
 import org.sql2o.*;
 
 import java.util.ArrayList;
@@ -24,6 +18,8 @@ public class App {
         Sql2oCommunityDao communityDao;
         Sql2oServiceDao serviceDao;
         Sql2oRegionDao regionDao;
+        Sql2oReportDao reportDao;
+        Sql2oContactDao contactDao;
 
         Connection conn;
         Gson gson = new Gson();
@@ -35,6 +31,8 @@ public class App {
         communityDao = new Sql2oCommunityDao(sql2o);
         serviceDao = new Sql2oServiceDao(sql2o);
         regionDao = new Sql2oRegionDao(sql2o);
+        reportDao = new Sql2oReportDao(sql2o);
+        contactDao = new Sql2oContactDao(sql2o);
 
         conn = sql2o.open();
 
@@ -60,7 +58,6 @@ public class App {
                 int serviceId = Integer.parseInt(service.get("id"));
                 Service associatedService = serviceDao.findById(serviceId);
                 organizationDao.addOrganizationToService(newOrganization, associatedService);
-                System.out.println(serviceDao.getAllOrganizations(serviceId).size());
             }
 
             // Parse communities and add join table row(s)
@@ -68,7 +65,6 @@ public class App {
                 int communityId = Integer.parseInt(community.get("id"));
                 Community associatedCommunity = communityDao.findById(communityId);
                 organizationDao.addOrganizationToCommunity(newOrganization, associatedCommunity);
-                System.out.println(communityDao.getAllOrganizations(communityId).size());
             }
 
             // Parse regions and add join table row(s)
@@ -76,11 +72,70 @@ public class App {
                 int regionId = Integer.parseInt(region.get("id"));
                 Region associatedRegion = regionDao.findById(regionId);
                 organizationDao.addOrganizationToRegion(newOrganization, associatedRegion);
-                System.out.println(regionDao.getAllOrganizations(regionId).size());
             }
 
             res.status(201);
             return gson.toJson(newOrganization);
+        });
+
+        post("/reports/new", "application/json", (req, res) -> {
+
+            // Cast request object to HashMap
+            HashMap<String, ArrayList<LinkedTreeMap<String, String>>> requestBody = gson.fromJson(req.body(), HashMap.class);
+
+            // Parse report
+            LinkedTreeMap<String, String> sentReport = requestBody.get("report").get(0);
+
+            String type = sentReport.get("type");
+            String reporterRole = sentReport.get("reporterRole");
+            int reporterAge = Integer.parseInt(sentReport.get("reporterAge"));
+            String reporterLocation = sentReport.get("reporterLocation");
+            String incidentDate = sentReport.get("incidentDate");
+            String incidentTime = sentReport.get("incidentTime");
+            String incidentCrossStreets = sentReport.get("incidentCrossStreets");
+            String incidentSetting = sentReport.get("incidentSetting");
+            String incidentType = sentReport.get("incidentType");
+            String incidentTypeNotes = sentReport.get("incidentTypeNotes");
+            String incidentMotivation = sentReport.get("incidentMotivation");
+            String incidentMotivationNotes = sentReport.get("incidentMotivationNotes");
+            boolean injuryOccurred = Boolean.parseBoolean(sentReport.get("injuryOccurred"));
+            String injuryNotes = sentReport.get("injuryNotes");
+            boolean damagesOccurred = Boolean.parseBoolean(sentReport.get("damagesOccurred"));
+            String damagesNotes = sentReport.get("damagesNotes");
+            boolean officiallyReported = Boolean.parseBoolean(sentReport.get("officiallyReported"));
+            String officialReportNotes = sentReport.get("officialReportNotes");
+            String additionalNotes = sentReport.get("additionalNotes");
+
+            Report newReport = new Report(type, reporterRole, reporterAge, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes,  incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, additionalNotes);
+            reportDao.add(newReport);
+            int reportId = newReport.getId();
+
+            // Parse contact and add join table row(s)
+            LinkedTreeMap<String, String> sentContact = requestBody.get("contact").get(0);
+            String firstName = sentContact.get("firstName");
+            String lastName = sentContact.get("lastName");
+            String email = sentContact.get("email");
+            String phone = sentContact.get("phone");
+
+            Contact newContact = new Contact(firstName, lastName, email, phone);
+            contactDao.add(newContact);
+            int contactId = newContact.getId();
+            reportDao.addContactToReport(reportId, contactId);
+
+            // Parse communities and add join table row(s)
+            for (LinkedTreeMap<String, String> community : requestBody.get("communities")) {
+                int communityId = Integer.parseInt(community.get("id"));
+                reportDao.addCommunityToReport(reportId, communityId);
+            }
+
+            // Parse organizations and add join table row(s)
+            for (LinkedTreeMap<String, String> organization : requestBody.get("organizations")) {
+                int organizationId = Integer.parseInt(organization.get("id"));
+                reportDao.addOrganizationToReport(reportId, organizationId);
+            }
+
+            res.status(201);
+            return gson.toJson(newReport.getConfirmationCode());
         });
 
         post("/services/new", "application/json", (req, res) -> {
