@@ -159,7 +159,7 @@ public class Sql2oReportDao implements ReportDao {
 
     @Override
     public void update(Report report) {
-        String sql = "UPDATE reports SET (confirmationCode, reporterRole, reporterAge, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes, incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, additionalNotes) = (:confirmationCode, :reporterRole, :reporterAge, :reporterLocation, :incidentDate, :incidentTime, :incidentCrossStreets, :incidentSetting, :incidentType, :incidentTypeNotes, :incidentMotivation, :incidentMotivationNotes, :injuryOccurred, :injuryNotes, :damagesOccurred, :damagesNotes, :officiallyReported, :officialReportNotes, :additionalNotes) WHERE id =:id";
+        String sql = "UPDATE reports SET (confirmationCode, reporterRole, reporterAge, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes, incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, additionalNotes) = (:confirmationCode, :reporterRole, :reporterAge, :reporterLocation, :incidentDate, :incidentTime, :incidentCrossStreets, :incidentSetting, :incidentType, :incidentTypeNotes, :incidentMotivation, :incidentMotivationNotes, :injuryOccurred, :injuryNotes, :damagesOccurred, :damagesNotes, :officiallyReported, :officialReportNotes, :additionalNotes) WHERE id = :id";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .bind(report)

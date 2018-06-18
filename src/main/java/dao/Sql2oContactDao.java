@@ -46,7 +46,7 @@ public class Sql2oContactDao implements ContactDao {
 
     @Override
     public void update(Contact contact) {
-        String sql = "UPDATE contacts SET (firstName, lastName, email, phone) = (:firstName, :lastName, :email, :phone)";
+        String sql = "UPDATE contacts SET (firstName, lastName, email, phone) = (:firstName, :lastName, :email, :phone) WHERE id = :id";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .bind(contact)
