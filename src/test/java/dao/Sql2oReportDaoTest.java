@@ -51,7 +51,7 @@ public class Sql2oReportDaoTest {
     public void getAll_returnsAllExistingReports() throws Exception{
         Report testReport = newReport();
         Report testAltReport = newAltReport();
-        assertEquals(2, reportDao.getAll().size());
+        assertEquals(4, reportDao.getAll().size());
     }
 
     @Test
