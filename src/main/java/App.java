@@ -394,7 +394,6 @@ public class App {
             return gson.toJson(contactDao.findById(contactId));
         });
 
-
         // UPDATE
         post("/organizations/:id/update", "application/json", (req, res) ->{
             Organization updatedOrganization = gson.fromJson(req.body(), Organization.class);
@@ -424,8 +423,21 @@ public class App {
             return gson.toJson(updatedRegion);
         });
 
-        // DELETE
+        post("/reports/:id/update", "application/json", (req, res) -> {
+            Report updatedReport= gson.fromJson(req.body(), Report.class);
+            reportDao.update(updatedReport);
+            res.status(201);
+            return gson.toJson(updatedReport);
+        });
 
+        post("/contacts/:id/update", "application/json", (req, res) -> {
+            Contact updatedContact= gson.fromJson(req.body(), Contact.class);
+            contactDao.update(updatedContact);
+            res.status(201);
+            return gson.toJson(updatedContact);
+        });
+
+        // DELETE
         post("/organizations/:id/delete", "application/json", (req, res) -> {
             int organizationId = Integer.parseInt(req.params("id"));
             String organizationName = organizationDao.findById(organizationId).getName();
