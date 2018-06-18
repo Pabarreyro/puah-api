@@ -67,6 +67,19 @@ public class Sql2oOrganizationDao implements OrganizationDao {
     }
 
     @Override
+    public void addOrganizationToContact(int organizationId, int contactId) {
+        String sql = "INSERT INTO organizations_contacts (organizationId, contactId) VALUES (:organizationId, :contactId)";
+        try (Connection con = sql2o.open()) {
+            con.createQuery(sql)
+                    .addParameter("organizationId", organizationId)
+                    .addParameter("contactId", contactId)
+                    .executeUpdate();
+        } catch (Sql2oException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    @Override
     public List<Organization> getAll() {
         try (Connection con = sql2o.open()) {
             return con.createQuery("SELECT * FROM organizations")

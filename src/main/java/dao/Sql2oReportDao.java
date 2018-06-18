@@ -35,7 +35,7 @@ public class Sql2oReportDao implements ReportDao {
 
     @Override
     public void addOrganizationToReport(int reportId, int organizationId) {
-        String sql = "INSERT INTO reports_organizations (reportId, organizationId) VALUES (:reportId, :organizationId)";
+        String sql = "INSERT INTO organizations_reports (reportId, organizationId) VALUES (:reportId, :organizationId)";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .addParameter("organizationId", organizationId)
@@ -106,7 +106,7 @@ public class Sql2oReportDao implements ReportDao {
     public List<Organization> getAllOrganizations(int reportId) {
         ArrayList<Organization> returnedOrganizations = new ArrayList<>();
 
-        String joinQuery = "SELECT organizationId FROM reports_organizations WHERE reportId = :reportId";
+        String joinQuery = "SELECT organizationId FROM organizations_reports WHERE reportId = :reportId";
         try (Connection con = sql2o.open()) {
             List<Integer> organizationIds = con.createQuery(joinQuery)
                     .addParameter("reportId", reportId)
@@ -145,7 +145,7 @@ public class Sql2oReportDao implements ReportDao {
 
     @Override
     public Report findByContact(int contactId) {
-        String joinTableLookup = "SELECT reportId FROM reports_contact WHERE contactId = :contactId";
+        String joinTableLookup = "SELECT reportId FROM reports_contacts WHERE contactId = :contactId";
         String sql = "SELECT * FROM reports WHERE id = :id";
         try (Connection con = sql2o.open()) {
             int reportId = (int) con.createQuery(joinTableLookup)
@@ -173,7 +173,7 @@ public class Sql2oReportDao implements ReportDao {
     public void deleteById(int id) {
         String sql = "DELETE from reports WHERE id = :id";
         String deleteCommunityJoin = "DELETE from reports_communities WHERE reportId = :reportId";
-        String deleteOrganizationJoin = "DELETE from reports_organizations WHERE reportId = :reportId";
+        String deleteOrganizationJoin = "DELETE from organizations_reports WHERE reportId = :reportId";
 
         try (Connection con = sql2o.open()) {
             con.createQuery(sql).addParameter("id", id).executeUpdate();
@@ -188,7 +188,7 @@ public class Sql2oReportDao implements ReportDao {
     public void clearAll() {
         String sql = "TRUNCATE reports";
         String clearCommunityJoins = "TRUNCATE reports_communities";
-        String clearOrganizationJoins = "TRUNCATE reports_organizations";
+        String clearOrganizationJoins = "TRUNCATE organizations_reports";
         try (Connection con = sql2o.open()) {
             con.createQuery(sql)
                     .executeUpdate();
