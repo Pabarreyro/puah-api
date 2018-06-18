@@ -13,9 +13,12 @@ import java.util.Map;
 import static spark.Spark.*;
 
 public class App {
+    private static boolean isProduction = false;
+
     static int getHerokuAssignedPort() {
         ProcessBuilder processBuilder = new ProcessBuilder();
         if (processBuilder.environment().get("PORT") != null) {
+            isProduction = true;
             return Integer.parseInt(processBuilder.environment().get("PORT"));
         }
         return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
@@ -29,12 +32,18 @@ public class App {
         Sql2oRegionDao regionDao;
         Sql2oReportDao reportDao;
         Sql2oContactDao contactDao;
+        Sql2o sql2o;
 
         Connection conn;
         Gson gson = new Gson();
 
-        String connectionString = "jdbc:postgresql://ec2-23-23-247-222.compute-1.amazonaws.com:5432/d6qapk7gsimgh1";
-        Sql2o sql2o = new Sql2o(connectionString, "qswukpccumburz", "ae9f8af254704102b28cb9f4aec84260424ffcc1e9d448fe0823d2700752baa4");
+        if(isProduction) {
+            String connectionString = "jdbc:postgresql://ec2-23-23-247-222.compute-1.amazonaws.com:5432/d6qapk7gsimgh1";
+            sql2o = new Sql2o(connectionString, "qswukpccumburz", "ae9f8af254704102b28cb9f4aec84260424ffcc1e9d448fe0823d2700752baa4");
+        } else {
+            String connectionString = "jdbc:postgresql://localhost:5432/puah";
+            sql2o = new Sql2o(connectionString, null, null);
+        }
 
         organizationDao = new Sql2oOrganizationDao(sql2o);
         communityDao = new Sql2oCommunityDao(sql2o);
