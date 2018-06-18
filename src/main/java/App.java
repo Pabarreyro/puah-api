@@ -305,6 +305,34 @@ public class App {
             return gson.toJson(organizationToFind);
         });
 
+        get("/organizations/:id/reports", "application/json", (req, res) -> {
+            int organizationId = Integer.parseInt(req.params("id"));
+
+            if (organizationDao.findById(organizationId) == null) {
+                throw new ApiException(404, String.format("No organization with the id: \"%s\" exists", req.params("id")));
+            }
+
+            if (organizationDao.getAllReports(organizationId).size() > 0) {
+                return gson.toJson(organizationDao.getAllReports(organizationId));
+            } else {
+                return "{\"message\":\"I'm sorry, but no reports are currently listed in the database.\"}";
+            }
+        });
+
+        get("/organizations/:id/contacts", "application/json", (req, res) -> {
+            int organizationId = Integer.parseInt(req.params("id"));
+
+            if (organizationDao.findById(organizationId) == null) {
+                throw new ApiException(404, String.format("No organization with the id: \"%s\" exists", req.params("id")));
+            }
+
+            if (organizationDao.getAllContacts(organizationId).size() > 0) {
+                return gson.toJson(organizationDao.getAllContacts(organizationId));
+            } else {
+                return "{\"message\":\"I'm sorry, but no contacts are currently listed in the database.\"}";
+            }
+        });
+
         get("/services/:id", "application/json", (req, res) -> {
             int serviceId = Integer.parseInt(req.params("id"));
 
