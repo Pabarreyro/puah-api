@@ -17,6 +17,7 @@ public interface ReportDao {
     List<Report> getAll();
     List<Community> getAllCommunities(int reportId);
     List<Organization> getAllOrganizations(int reportId);
+    List<Contact> getAllContacts(int contactId);
     Report findById(int reportId);
     Report findByConfirmationCode(String confirmationCode);
     Report findByContact(int contactId);
