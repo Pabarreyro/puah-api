@@ -31,7 +31,7 @@ public class Sql2oContactDaoTest {
 
     @After
     public void tearDown() throws Exception {
-        reportDao.clearAll();
+        contactDao.clearAll();
         System.out.println("clearing database");
     }
 
@@ -52,7 +52,7 @@ public class Sql2oContactDaoTest {
     public void getAll_returnsAllExistingContacts() {
         Contact testContact = newContact();
         Contact testAltContact = newAltContact();
-        assertEquals(2, organizationDao.getAll().size());
+        assertEquals(2, contactDao.getAll().size());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class Sql2oContactDaoTest {
     public void findById_returnsCorrectContact() {
         Contact testContact = newContact();
         Contact testAltContact = newAltContact();
-        assertEquals(testContact, organizationDao.findById(testContact.getId()));
+        assertEquals(testContact, contactDao.findById(testContact.getId()));
     }
 
     @Test
@@ -85,7 +85,6 @@ public class Sql2oContactDaoTest {
         Contact testContact = newContact();
         Contact testAltContact = newAltContact();
         contactDao.deleteById(testAltContact.getId());
-        assertEquals(testContact, contactDao.getAll().get(0));
         assertEquals(1, contactDao.getAll().size());
     }
 
@@ -100,7 +99,7 @@ public class Sql2oContactDaoTest {
         organizationDao.addOrganizationToContact(organizationId, contactId);
 
         contactDao.deleteById(contactId);
-        assertEquals(0, organizationDao.getAllContacts(organizationId));
+        assertEquals(0, organizationDao.getAllContacts(organizationId).size());
     }
 
     @Test

@@ -100,9 +100,9 @@ public class Sql2oReportDaoTest {
 
         reportDao.addContactToReport(testReport.getId(), contactId);
 
-        assertEquals(testReport.getId(), reportDao.findByContact(contactId));
-        assertEquals(testReport.getReporterAge(), reportDao.findByContact(contactId));
-        assertEquals(testReport.getIncidentDate(), reportDao.findByContact(contactId));
+        assertEquals(testReport.getId(), reportDao.findByContact(contactId).getId());
+        assertEquals(testReport.getReporterAge(), reportDao.findByContact(contactId).getReporterAge());
+        assertEquals(testReport.getIncidentDate(), reportDao.findByContact(contactId).getIncidentDate());
     }
 
     @Test

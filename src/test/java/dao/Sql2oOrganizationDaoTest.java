@@ -108,11 +108,11 @@ public class Sql2oOrganizationDaoTest {
         Report altTestReport = newAltReport();
 
         Organization testOrganization = setUpOrganization();
+        int organizationId = testOrganization.getId();
         reportDao.addOrganizationToReport(testReport.getId(), testOrganization.getId());
         reportDao.addOrganizationToReport(altTestReport.getId(), testOrganization.getId());
 
-        Report[] reports = {testReport, altTestReport};
-        assertEquals(Arrays.asList(reports), organizationDao.getAllReports(testOrganization.getId()));
+        assertEquals(2, organizationDao.getAllReports(organizationId).size());
     }
 
     @Test
@@ -121,11 +121,11 @@ public class Sql2oOrganizationDaoTest {
         Contact altTestContact = newAltContact();
 
         Organization testOrganization = setUpOrganization();
-        reportDao.addContactToReport(testContact.getId(), testOrganization.getId());
-        reportDao.addContactToReport(altTestContact.getId(), testOrganization.getId());
+        int organizationId = testOrganization.getId();
+        organizationDao.addOrganizationToContact(organizationId, testContact.getId());
+        organizationDao.addOrganizationToContact(organizationId, altTestContact.getId());
 
-        Contact[] contacts = {testContact, altTestContact};
-        assertEquals(Arrays.asList(contacts), organizationDao.getAllContacts(testOrganization.getId()));
+        assertEquals(2, organizationDao.getAllContacts(organizationId).size());
     }
 
     @Test
