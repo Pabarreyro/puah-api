@@ -58,7 +58,7 @@ CREATE TABLE contacts (
     firstName VARCHAR,
     lastName VARCHAR,
     phone VARCHAR,
-    email VARCHAR,
+    email VARCHAR
 );
 
 CREATE TABLE organizations_communities (
