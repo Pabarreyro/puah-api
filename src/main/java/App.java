@@ -524,6 +524,9 @@ public class App {
         });
 
         // FILTER
+
+        before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+
         after((req, res) ->{
             res.type("application/json");
         });
