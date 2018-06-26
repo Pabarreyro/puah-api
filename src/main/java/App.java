@@ -125,6 +125,8 @@ public class App {
             String officialReportNotes = sentReport.get("officialReportNotes");
             String description = sentReport.get("description");
             String additionalNotes = sentReport.get("additionalNotes");
+            int contactId = 0;
+            int organizationId = 0;
 
             Report newReport = new Report(type, reporterRole, reporterAge, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes,  incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, description, additionalNotes);
             reportDao.add(newReport);
@@ -132,31 +134,38 @@ public class App {
             System.out.println(newReport.getDateTimeFiled());
             System.out.println(newReport.getFormattedDateTime());
 
-            // Parse contact and add join table row(s)
-            LinkedTreeMap<String, String> sentContact = requestBody.get("contact").get(0);
-            String firstName = sentContact.get("firstName");
-            String lastName = sentContact.get("lastName");
-            String email = sentContact.get("email");
-            String phone = sentContact.get("phone");
-
-            Contact newContact = new Contact(firstName, lastName, email, phone);
-            contactDao.add(newContact);
-            int contactId = newContact.getId();
-            reportDao.addContactToReport(reportId, contactId);
-            System.out.println(contactDao.getAll().size());
-
             // Parse communities and add join table row(s)
-            for (LinkedTreeMap<String, String> community : requestBody.get("communities")) {
-                int communityId = Integer.parseInt(community.get("id"));
-                reportDao.addCommunityToReport(reportId, communityId);
-                System.out.println(reportDao.getAllCommunities(reportId).size());
+            if (requestBody.get("communities") != null) {
+                for (LinkedTreeMap<String, String> community : requestBody.get("communities")) {
+                    int communityId = Integer.parseInt(community.get("id"));
+                    reportDao.addCommunityToReport(reportId, communityId);
+                    System.out.println(reportDao.getAllCommunities(reportId).size());
+                }
+            }
+
+            // Parse contact and add join table row(s)
+            if (requestBody.get("contact") != null) {
+                LinkedTreeMap<String, String> sentContact = requestBody.get("contact").get(0);
+                String firstName = sentContact.get("firstName");
+                String lastName = sentContact.get("lastName");
+                String email = sentContact.get("email");
+                String phone = sentContact.get("phone");
+
+                Contact newContact = new Contact(firstName, lastName, email, phone);
+                contactDao.add(newContact);
+                contactId = newContact.getId();
+                reportDao.addContactToReport(reportId, contactId);
+                System.out.println(contactDao.getAll().size());
             }
 
             // Parse organizations and add join table row(s)
-            for (LinkedTreeMap<String, String> organization : requestBody.get("organizations")) {
-                int organizationId = Integer.parseInt(organization.get("id"));
-                reportDao.addOrganizationToReport(reportId, organizationId);
-                System.out.println(reportDao.getAllOrganizations(reportId).size());
+            if (requestBody.get("organizations") != null) {
+                for (LinkedTreeMap<String, String> organization : requestBody.get("organizations")) {
+                    organizationId = Integer.parseInt(organization.get("id"));
+                    reportDao.addOrganizationToReport(reportId, organizationId);
+                    organizationDao.addOrganizationToContact(organizationId, contactId);
+                    System.out.println(reportDao.getAllOrganizations(reportId).size());
+                }
             }
 
             res.status(201);
