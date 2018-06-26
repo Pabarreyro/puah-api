@@ -15,7 +15,7 @@ public class Sql2oReportDao implements ReportDao {
     
     @Override
     public void add(Report report) {
-        String sql = "INSERT INTO reports (reporterRole, reporterAge, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes, incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, additionalNotes) VALUES (:reporterRole, :reporterAge, :reporterLocation, :incidentDate, :incidentTime, :incidentCrossStreets, :incidentSetting, :incidentType, :incidentTypeNotes, :incidentMotivation, :incidentMotivationNotes, :injuryOccurred, :injuryNotes, :damagesOccurred, :damagesNotes, :officiallyReported, :officialReportNotes, :additionalNotes)";
+        String sql = "INSERT INTO reports (reporterRole, reporterAge, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes, incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, description, additionalNotes) VALUES (:reporterRole, :reporterAge, :reporterLocation, :incidentDate, :incidentTime, :incidentCrossStreets, :incidentSetting, :incidentType, :incidentTypeNotes, :incidentMotivation, :incidentMotivationNotes, :injuryOccurred, :injuryNotes, :damagesOccurred, :damagesNotes, :officiallyReported, :officialReportNotes, :description, :additionalNotes)";
         String confirmationCode = "UPDATE reports SET confirmationCode = :confirmationCode WHERE id = :id";
         try (Connection con= sql2o.open()) {
             int id = (int) con.createQuery(sql, true)
