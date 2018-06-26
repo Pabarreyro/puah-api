@@ -128,6 +128,7 @@ public class Sql2oReportDaoTest {
                 "",
                 false,
                 "",
+                "",
                 ""
         );
         testAltReport.setId(testReport.getId());
@@ -218,6 +219,7 @@ public class Sql2oReportDaoTest {
                 "",
                 true,
                 "",
+                "",
                 ""
         );
         reportDao.add(newReport);
@@ -243,6 +245,7 @@ public class Sql2oReportDaoTest {
                 true,
                 "",
                 true,
+                "",
                 "",
                 ""
         );

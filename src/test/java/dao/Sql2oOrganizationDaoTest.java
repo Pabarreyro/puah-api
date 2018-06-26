@@ -254,6 +254,7 @@ public class Sql2oOrganizationDaoTest {
                 "",
                 true,
                 "",
+                "",
                 ""
         );
         reportDao.add(newReport);
@@ -279,6 +280,7 @@ public class Sql2oOrganizationDaoTest {
                 true,
                 "",
                 true,
+                "",
                 "",
                 ""
         );
