@@ -25,6 +25,7 @@ public class Report {
     private String damagesNotes;
     private boolean officiallyReported;
     private String officialReportNotes;
+    private String description;
     private String additionalNotes;
     private long dateTimeFiled;
     private String formattedDateTime;
@@ -36,7 +37,7 @@ public class Report {
     private List<Contact> contacts;
 
 
-    public Report(String type, String reporterRole, int reporterAge, String reporterLocation, String incidentDate, String incidentTime, String incidentCrossStreets, String incidentSetting, String incidentType, String incidentTypeNotes, String incidentMotivation, String incidentMotivationNotes, boolean injuryOccurred, String injuryNotes, boolean damagesOccurred, String damagesNotes, boolean officiallyReported, String officialReportNotes, String additionalNotes) {
+    public Report(String type, String reporterRole, int reporterAge, String reporterLocation, String incidentDate, String incidentTime, String incidentCrossStreets, String incidentSetting, String incidentType, String incidentTypeNotes, String incidentMotivation, String incidentMotivationNotes, boolean injuryOccurred, String injuryNotes, boolean damagesOccurred, String damagesNotes, boolean officiallyReported, String officialReportNotes, String description, String additionalNotes) {
         this.type = type;
         this.reporterRole = reporterRole;
         this.reporterAge = reporterAge;
@@ -55,6 +56,7 @@ public class Report {
         this.damagesNotes = damagesNotes;
         this.officiallyReported = officiallyReported;
         this.officialReportNotes = officialReportNotes;
+        this.description = description;
         this.additionalNotes = additionalNotes;
 
         this.dateTimeFiled = System.currentTimeMillis();
@@ -204,6 +206,10 @@ public class Report {
     public void setOfficialReportNotes(String officialReportNotes) {
         this.officialReportNotes = officialReportNotes;
     }
+
+    public String getDescription() { return description; }
+
+    public void setDescription(String description) { this.description = description; }
 
     public String getAdditionalNotes() {
         return additionalNotes;
