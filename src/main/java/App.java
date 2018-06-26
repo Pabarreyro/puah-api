@@ -123,9 +123,10 @@ public class App {
             String damagesNotes = sentReport.get("damagesNotes");
             boolean officiallyReported = Boolean.parseBoolean(sentReport.get("officiallyReported"));
             String officialReportNotes = sentReport.get("officialReportNotes");
+            String description = sentReport.get("description");
             String additionalNotes = sentReport.get("additionalNotes");
 
-            Report newReport = new Report(type, reporterRole, reporterAge, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes,  incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, additionalNotes);
+            Report newReport = new Report(type, reporterRole, reporterAge, reporterLocation, incidentDate, incidentTime, incidentCrossStreets, incidentSetting, incidentType, incidentTypeNotes,  incidentMotivation, incidentMotivationNotes, injuryOccurred, injuryNotes, damagesOccurred, damagesNotes, officiallyReported, officialReportNotes, description, additionalNotes);
             reportDao.add(newReport);
             int reportId = newReport.getId();
             System.out.println(newReport.getDateTimeFiled());
