@@ -50,6 +50,7 @@ CREATE TABLE reports (
     damagesNotes VARCHAR,
     officiallyReported BOOLEAN NOT NULL,
     officialReportNotes VARCHAR,
+    description VARCHAR,
     additionalNotes VARCHAR
 );
 
